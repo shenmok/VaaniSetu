@@ -71,8 +71,8 @@ class SpeechManager(private val context: Context, private val onSpeechResult: (S
             speechRecognizer?.startListening(intent)
         } catch (e: SecurityException) {
             android.widget.Toast.makeText(context, "Microphone permission denied!", android.widget.Toast.LENGTH_SHORT).show()
-        } catch (e: Exception) {
-            android.widget.Toast.makeText(context, "Speech recognition not available on this device/emulator", android.widget.Toast.LENGTH_LONG).show()
+        } catch (e: Throwable) {
+            android.widget.Toast.makeText(context, "Emulator missing Speech SDK: ${e.message}", android.widget.Toast.LENGTH_LONG).show()
         }
     }
 

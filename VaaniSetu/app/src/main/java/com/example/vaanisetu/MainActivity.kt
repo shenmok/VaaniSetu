@@ -233,22 +233,30 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun triggerPttHaptic() {
-        val vibrator = getSystemService<Vibrator>() ?: return
-        if (isFirstPttPress) {
-            // Two-pulse pattern: 11ms micro-vibration then 43ms main haptic
-            val pattern = longArrayOf(0, 11, 30, 43)
-            vibrator.vibrate(VibrationEffect.createWaveform(pattern, -1))
-            isFirstPttPress = false
-        } else {
-            vibrator.vibrate(VibrationEffect.createOneShot(43, VibrationEffect.DEFAULT_AMPLITUDE))
+        try {
+            val vibrator = getSystemService<Vibrator>() ?: return
+            if (isFirstPttPress) {
+                // Two-pulse pattern: 11ms micro-vibration then 43ms main haptic
+                val pattern = longArrayOf(0, 11, 30, 43)
+                vibrator.vibrate(VibrationEffect.createWaveform(pattern, -1))
+                isFirstPttPress = false
+            } else {
+                vibrator.vibrate(VibrationEffect.createOneShot(43, VibrationEffect.DEFAULT_AMPLITUDE))
+            }
+        } catch (e: Exception) {
+            // Ignore haptic crashes on some emulators
         }
     }
 
     private fun triggerReleaseHaptic() {
-        val vibrator = getSystemService<Vibrator>() ?: return
-        // Light double-tap on release
-        val pattern = longArrayOf(0, 15, 30, 15)
-        vibrator.vibrate(VibrationEffect.createWaveform(pattern, -1))
+        try {
+            val vibrator = getSystemService<Vibrator>() ?: return
+            // Light double-tap on release
+            val pattern = longArrayOf(0, 15, 30, 15)
+            vibrator.vibrate(VibrationEffect.createWaveform(pattern, -1))
+        } catch (e: Exception) {
+            // Ignore haptic crashes on some emulators
+        }
     }
 
     // ── Speaking indicator ────────────────────────────────────────────
