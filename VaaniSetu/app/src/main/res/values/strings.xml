@@ -14,8 +14,8 @@
     <!-- Home Screen -->
     <string name="connected_peers">Connected Peers</string>
     <string name="no_peers_found">Searching for nearby devices…</string>
-    <string name="ptt_channel_mode">🎙️  PTT Channel Mode</string>
-    <string name="alert_button">🚨  SEND ALERT</string>
+    <string name="ptt_channel_mode">PTT Channel Mode</string>
+    <string name="alert_button">SEND ALERT</string>
     <string name="profile_settings">Profile Settings</string>
     <string name="peer_count_format">%d Peers</string>
 

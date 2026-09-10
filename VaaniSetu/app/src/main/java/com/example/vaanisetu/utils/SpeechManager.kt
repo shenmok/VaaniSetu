@@ -67,11 +67,21 @@ class SpeechManager(private val context: Context, private val onSpeechResult: (S
             putExtra(RecognizerIntent.EXTRA_LANGUAGE, langCode.replace("-", "_"))
             putExtra(RecognizerIntent.EXTRA_PARTIAL_RESULTS, true)
         }
-        speechRecognizer?.startListening(intent)
+        try {
+            speechRecognizer?.startListening(intent)
+        } catch (e: SecurityException) {
+            android.widget.Toast.makeText(context, "Microphone permission denied!", android.widget.Toast.LENGTH_SHORT).show()
+        } catch (e: Exception) {
+            android.widget.Toast.makeText(context, "Speech recognition not available on this device/emulator", android.widget.Toast.LENGTH_LONG).show()
+        }
     }
 
     fun stopListening() {
-        speechRecognizer?.stopListening()
+        try {
+            speechRecognizer?.stopListening()
+        } catch (e: Exception) {
+            // Ignore if already stopped or destroyed
+        }
     }
 
     fun speak(text: String, sender: String, langCode: String, urgencyFlag: Int) {
