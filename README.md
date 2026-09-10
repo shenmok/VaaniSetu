@@ -24,13 +24,21 @@ VaaniSetu is an offline-first, peer-to-peer communication application designed f
 - **Stealth Mode & Haptics:** Face-down detection triggers Morse-like haptic vibrations for hostile environments.
 
 ## 5. Technology Stack
-- **Frontend & App Framework:** Android Native Views (Material Design 3)
-- **Programming Language:** Kotlin
-- **Database:** Room / SQLite + SharedPreferences
-- **Networking:** Custom Wi-Fi Direct/Bluetooth SPP, Google Nearby Connections API
-- **AI Models:** AI4Bharat IndicConformer (STT), AI4Bharat VITS Rasa 13 (TTS)
-- **Runtime:** sherpa-onnx (ONNX Runtime Mobile with NNAPI)
-- **Hardware Integration:** ESP32 Heltec V3 / LilyGO T-Beam (Sub-GHz LoRa)
+- **Frontend / Application:** Kotlin, Android SDK, Android Native Views (Material Design 3 / XML)
+- **Native Audio:** Android AudioRecord, AudioTrack, AudioManager
+- **STT:** AI4Bharat IndicConformer
+- **TTS:** AI4Bharat VITS / Indic TTS models
+- **AI Runtime:** ONNX Runtime Mobile, sherpa-onnx
+- **VAD:** Silero VAD
+- **Model Optimization:** INT8 quantization, ONNX Runtime optimization
+- **Networking:** Bluetooth Classic SPP/RFCOMM, Wi-Fi Direct, UDP/TCP sockets
+- **Native Layer:** C++ / JNI
+- **Development & Build:** Android Studio, Gradle, Git, GitHub
+- **Model/Data Tools:** Python, Hugging Face
+- **Optional Hardware Extension:** ESP32 + LoRa
+- **Compression:** Brotli / lightweight text encoding
+- **Database:** Local device storage only (Room / SQLite); no cloud database
+- **Cloud/API:** None — fully offline architecture
 
 ## 6. Architecture
 See [docs/Architecture2.md](docs/Architecture2.md) for full implementation details.
