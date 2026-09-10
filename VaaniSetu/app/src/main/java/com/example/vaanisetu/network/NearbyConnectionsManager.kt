@@ -86,8 +86,11 @@ object NearbyConnectionsManager {
 
     private val endpointDiscoveryCallback = object : EndpointDiscoveryCallback() {
         override fun onEndpointFound(endpointId: String, info: DiscoveredEndpointInfo) {
-            // Found a peer, request connection
-            connectionsClient?.requestConnection(localUserName, endpointId, connectionLifecycleCallback)
+            // Ignore ourselves if we pick up our own broadcast
+            if (info.endpointName != localUserName) {
+                // Found a valid peer, request connection
+                connectionsClient?.requestConnection(localUserName, endpointId, connectionLifecycleCallback)
+            }
         }
         override fun onEndpointLost(endpointId: String) {}
     }
