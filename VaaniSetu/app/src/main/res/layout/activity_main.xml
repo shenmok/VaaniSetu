@@ -32,31 +32,19 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
 
-    <!-- ========== TOP BAR: Peer Counter (left) + Language Dropdown (right) ========== -->
-    <TextView
-        android:id="@+id/peerCounterText"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="12dp"
-        android:layout_marginTop="10dp"
-        android:background="@drawable/bg_peer_counter_badge"
-        android:text="@string/peer_count_format"
-        android:textColor="#FFFFFF"
-        android:textSize="13sp"
+    <!-- ========== TOP BAR: Back Button (left) + Language Dropdown (right) ========== -->
+    <ImageButton
+        android:id="@+id/btnBack"
+        android:layout_width="44dp"
+        android:layout_height="44dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="6dp"
+        android:background="?attr/selectableItemBackgroundBorderless"
+        android:src="@android:drawable/ic_menu_revert"
+        android:contentDescription="Back to Home"
+        app:tint="#FFFFFF"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/modeIndicatorBar" />
-
-    <!-- Speaking indicator dot: size-pulses 8dp→11dp, NOT alpha fade -->
-    <View
-        android:id="@+id/speakingIndicator"
-        android:layout_width="8dp"
-        android:layout_height="8dp"
-        android:layout_marginStart="8dp"
-        android:background="@drawable/bg_speaking_indicator"
-        android:visibility="gone"
-        app:layout_constraintStart_toEndOf="@id/peerCounterText"
-        app:layout_constraintTop_toTopOf="@id/peerCounterText"
-        app:layout_constraintBottom_toBottomOf="@id/peerCounterText" />
 
     <Spinner
         android:id="@+id/languageDropdown"
@@ -66,7 +54,20 @@
         android:layout_marginTop="6dp"
         android:backgroundTint="#FFFFFF"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/modeIndicatorBar" />
+        app:layout_constraintTop_toBottomOf="@id/modeIndicatorBar"
+        app:layout_constraintBottom_toBottomOf="@id/btnBack" />
+
+    <!-- Speaking indicator dot: size-pulses 8dp→11dp, NOT alpha fade -->
+    <View
+        android:id="@+id/speakingIndicator"
+        android:layout_width="8dp"
+        android:layout_height="8dp"
+        android:layout_marginEnd="8dp"
+        android:background="@drawable/bg_speaking_indicator"
+        android:visibility="gone"
+        app:layout_constraintEnd_toStartOf="@id/languageDropdown"
+        app:layout_constraintTop_toTopOf="@id/languageDropdown"
+        app:layout_constraintBottom_toBottomOf="@id/languageDropdown" />
 
     <!-- ========== CHANNEL TABS ========== -->
     <!-- Unequal padding: 14dp horizontal, 9dp vertical per Design1.md -->
@@ -76,7 +77,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
         android:scrollbars="none"
-        app:layout_constraintTop_toBottomOf="@id/peerCounterText"
+        app:layout_constraintTop_toBottomOf="@id/btnBack"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent">
 
@@ -126,67 +127,9 @@
         android:clipToPadding="false"
         android:paddingBottom="8dp"
         app:layout_constraintTop_toBottomOf="@id/channelTabsContainer"
-        app:layout_constraintBottom_toTopOf="@id/emergencyPresetsContainer"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
-
-    <!-- ========== EMERGENCY PRESET BUTTONS ========== -->
-    <!-- Unequal spacing: 19dp Medical→Fire, 13dp Fire→Water per Design1.md -->
-    <LinearLayout
-        android:id="@+id/emergencyPresetsContainer"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="12dp"
-        android:orientation="horizontal"
-        android:gravity="center"
         app:layout_constraintBottom_toTopOf="@id/pttButtonContainer"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent">
-
-        <!-- Medical Cross -->
-        <ImageButton
-            android:id="@+id/btnEmergencyMedical"
-            android:layout_width="56dp"
-            android:layout_height="56dp"
-            android:background="?attr/selectableItemBackgroundBorderless"
-            android:src="@android:drawable/ic_menu_call"
-            android:contentDescription="@string/desc_emergency_medical"
-            android:scaleType="centerInside"
-            app:tint="#B71C1C" />
-
-        <!-- 19dp gap between Medical and Fire -->
-        <View
-            android:layout_width="19dp"
-            android:layout_height="1dp" />
-
-        <!-- Fire -->
-        <ImageButton
-            android:id="@+id/btnEmergencyFire"
-            android:layout_width="56dp"
-            android:layout_height="56dp"
-            android:background="?attr/selectableItemBackgroundBorderless"
-            android:src="@android:drawable/ic_dialog_alert"
-            android:contentDescription="@string/desc_emergency_fire"
-            android:scaleType="centerInside"
-            app:tint="#FF6F00" />
-
-        <!-- 13dp gap between Fire and Water (intentionally different from 19dp above) -->
-        <View
-            android:layout_width="13dp"
-            android:layout_height="1dp" />
-
-        <!-- Water/Flood -->
-        <ImageButton
-            android:id="@+id/btnEmergencyWater"
-            android:layout_width="56dp"
-            android:layout_height="56dp"
-            android:background="?attr/selectableItemBackgroundBorderless"
-            android:src="@android:drawable/ic_menu_compass"
-            android:contentDescription="@string/desc_emergency_flood"
-            android:scaleType="centerInside"
-            app:tint="#1565C0" />
-
-    </LinearLayout>
+        app:layout_constraintEnd_toEndOf="parent" />
 
     <!-- ========== PTT BUTTON CONTAINER ========== -->
     <!-- Offset 11dp to the LEFT of center per Design1.md -->

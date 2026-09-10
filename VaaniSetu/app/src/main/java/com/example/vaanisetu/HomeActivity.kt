@@ -38,7 +38,6 @@ import java.util.Locale
 class HomeActivity : AppCompatActivity() {
 
     private lateinit var prefsManager: SharedPreferencesManager
-    private lateinit var nearbyManager: NearbyConnectionsManager
     private lateinit var peerAdapter: PeerAdapter
 
     // UI refs
@@ -96,8 +95,8 @@ class HomeActivity : AppCompatActivity() {
         setupButtons()
         inflateEmergencyOverlay()
 
-        // Init Nearby
-        nearbyManager = NearbyConnectionsManager(this, prefsManager.getUserName())
+        // Init Nearby (Singleton)
+        NearbyConnectionsManager.init(this, prefsManager.getUserName())
         observePeers()
     }
 
@@ -106,8 +105,8 @@ class HomeActivity : AppCompatActivity() {
         // Always re-request if permissions were revoked
         requestMissingPermissions()
         try {
-            nearbyManager.startAdvertising()
-            nearbyManager.startDiscovery()
+            NearbyConnectionsManager.startAdvertising()
+            NearbyConnectionsManager.startDiscovery()
         } catch (_: Exception) { /* permissions may not be granted yet */ }
         updateConnectivityIcons(true)
     }
@@ -120,7 +119,7 @@ class HomeActivity : AppCompatActivity() {
     override fun onDestroy() {
         super.onDestroy()
         tts?.shutdown()
-        try { nearbyManager.stopAll() } catch (_: Exception) {}
+        try { NearbyConnectionsManager.stopAll() } catch (_: Exception) {}
     }
 
     // ── Views ────────────────────────────────────────────────────────
@@ -186,14 +185,14 @@ class HomeActivity : AppCompatActivity() {
 
     private fun observePeers() {
         lifecycleScope.launch {
-            nearbyManager.peerCount.collectLatest { count ->
+            NearbyConnectionsManager.peerCount.collectLatest { count ->
                 peerCountBadge.text = count.toString()
                 emptyPeersText.visibility = if (count == 0) View.VISIBLE else View.GONE
                 peerRecyclerView.visibility = if (count > 0) View.VISIBLE else View.GONE
 
                 // Build peer list from connected endpoints
-                val peers = nearbyManager.connectedEndpoints.map { endpointId ->
-                    val name = nearbyManager.getPeerName(endpointId) ?: endpointId
+                val peers = NearbyConnectionsManager.connectedEndpoints.map { endpointId ->
+                    val name = NearbyConnectionsManager.getPeerName(endpointId) ?: endpointId
                     PeerInfo(endpointId, name)
                 }
                 peerAdapter.updatePeers(peers)
@@ -203,7 +202,7 @@ class HomeActivity : AppCompatActivity() {
 
         // Also observe incoming emergency payloads
         lifecycleScope.launch {
-            nearbyManager.incomingPayloads.collect { payload ->
+            NearbyConnectionsManager.incomingPayloads.collect { payload ->
                 if (payload.urgencyFlag == 1) {
                     triggerEmergencyAlert(payload.sender + " says: " + payload.text)
                 }
@@ -236,7 +235,7 @@ class HomeActivity : AppCompatActivity() {
                 urgencyFlag = 1,
                 text = alertText
             )
-            nearbyManager.broadcastMessage(payload)
+            NearbyConnectionsManager.broadcastMessage(payload)
             triggerEmergencyAlert(prefsManager.getUserName() + " says: " + alertText)
         }
     }

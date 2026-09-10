@@ -23,16 +23,23 @@ import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import java.nio.charset.StandardCharsets
 
-class NearbyConnectionsManager(
-    private val context: Context,
-    private val localUserName: String,
-    private val serviceId: String = "com.example.vaanisetu.SERVICE_ID",
-    clientForTesting: ConnectionsClient? = null
-) {
+import android.annotation.SuppressLint
 
-    private val connectionsClient: ConnectionsClient = clientForTesting ?: Nearby.getConnectionsClient(context)
+@SuppressLint("StaticFieldLeak")
+object NearbyConnectionsManager {
+
+    private var connectionsClient: ConnectionsClient? = null
     val connectedEndpoints = mutableSetOf<String>()
     private val peerNames = mutableMapOf<String, String>()
+    private var localUserName: String = ""
+    private var serviceId: String = "com.example.vaanisetu.SERVICE_ID"
+
+    fun init(context: Context, userName: String, clientForTesting: ConnectionsClient? = null) {
+        if (connectionsClient == null) {
+            connectionsClient = clientForTesting ?: Nearby.getConnectionsClient(context.applicationContext)
+            localUserName = userName
+        }
+    }
 
     fun getPeerName(endpointId: String): String? = peerNames[endpointId]
 
@@ -61,7 +68,7 @@ class NearbyConnectionsManager(
             // Store peer's display name from handshake
             peerNames[endpointId] = connectionInfo.endpointName
             // Auto-accept connection in P2P Cluster
-            connectionsClient.acceptConnection(endpointId, payloadCallback)
+            connectionsClient?.acceptConnection(endpointId, payloadCallback)
         }
 
         override fun onConnectionResult(endpointId: String, result: ConnectionResolution) {
@@ -80,29 +87,29 @@ class NearbyConnectionsManager(
     private val endpointDiscoveryCallback = object : EndpointDiscoveryCallback() {
         override fun onEndpointFound(endpointId: String, info: DiscoveredEndpointInfo) {
             // Found a peer, request connection
-            connectionsClient.requestConnection(localUserName, endpointId, connectionLifecycleCallback)
+            connectionsClient?.requestConnection(localUserName, endpointId, connectionLifecycleCallback)
         }
         override fun onEndpointLost(endpointId: String) {}
     }
 
     fun startAdvertising() {
         val options = AdvertisingOptions.Builder().setStrategy(Strategy.P2P_CLUSTER).build()
-        connectionsClient.startAdvertising(localUserName, serviceId, connectionLifecycleCallback, options)
-            .addOnSuccessListener { Log.d("Nearby", "Advertising started") }
-            .addOnFailureListener { Log.e("Nearby", "Advertising failed", it) }
+        connectionsClient?.startAdvertising(localUserName, serviceId, connectionLifecycleCallback, options)
+            ?.addOnSuccessListener { Log.d("Nearby", "Advertising started") }
+            ?.addOnFailureListener { Log.e("Nearby", "Advertising failed", it) }
     }
 
     fun startDiscovery() {
         val options = DiscoveryOptions.Builder().setStrategy(Strategy.P2P_CLUSTER).build()
-        connectionsClient.startDiscovery(serviceId, endpointDiscoveryCallback, options)
-            .addOnSuccessListener { Log.d("Nearby", "Discovery started") }
-            .addOnFailureListener { Log.e("Nearby", "Discovery failed", it) }
+        connectionsClient?.startDiscovery(serviceId, endpointDiscoveryCallback, options)
+            ?.addOnSuccessListener { Log.d("Nearby", "Discovery started") }
+            ?.addOnFailureListener { Log.e("Nearby", "Discovery failed", it) }
     }
 
     fun stopAll() {
-        connectionsClient.stopAdvertising()
-        connectionsClient.stopDiscovery()
-        connectionsClient.stopAllEndpoints()
+        connectionsClient?.stopAdvertising()
+        connectionsClient?.stopDiscovery()
+        connectionsClient?.stopAllEndpoints()
         connectedEndpoints.clear()
         _peerCount.value = 0
     }
@@ -111,6 +118,6 @@ class NearbyConnectionsManager(
         if (connectedEndpoints.isEmpty()) return
         val rawString = PayloadParser.encode(messagePayload)
         val payload = Payload.fromBytes(rawString.toByteArray(StandardCharsets.UTF_8))
-        connectionsClient.sendPayload(connectedEndpoints.toList(), payload)
+        connectionsClient?.sendPayload(connectedEndpoints.toList(), payload)
     }
 }

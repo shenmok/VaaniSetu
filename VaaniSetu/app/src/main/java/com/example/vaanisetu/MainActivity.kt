@@ -35,18 +35,13 @@ class MainActivity : AppCompatActivity() {
 
     // ── UI references ───────────────────────────────────────────────
     private lateinit var modeIndicatorBar: View
-    private lateinit var peerCounterText: TextView
+    private lateinit var btnBack: ImageButton
     private lateinit var speakingIndicator: View
     private lateinit var languageDropdown: Spinner
     private lateinit var messageRecyclerView: RecyclerView
     private lateinit var pttButton: ImageButton
     private lateinit var modeToggleLabel: TextView
     private lateinit var emergencyOverlayContainer: FrameLayout
-
-    // Emergency preset buttons
-    private lateinit var btnMedical: ImageButton
-    private lateinit var btnFire: ImageButton
-    private lateinit var btnWater: ImageButton
 
     // ── State ────────────────────────────────────────────────────────
     private enum class AppMode { PHONE, PTT, EMERGENCY }
@@ -58,8 +53,6 @@ class MainActivity : AppCompatActivity() {
     private lateinit var stealthManager: StealthManager
     private lateinit var viewModel: WalkieTalkieViewModel
 
-    private lateinit var nearbyManager: com.example.vaanisetu.network.NearbyConnectionsManager
-
     // ── Lifecycle ────────────────────────────────────────────────────
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -68,7 +61,7 @@ class MainActivity : AppCompatActivity() {
         prefsManager = SharedPreferencesManager(this)
         stealthManager = StealthManager(this)
         
-        nearbyManager = com.example.vaanisetu.network.NearbyConnectionsManager(this, prefsManager.getUserName())
+        com.example.vaanisetu.network.NearbyConnectionsManager.init(this, prefsManager.getUserName())
         
         speechManager = SpeechManager(this) { recognizedText ->
             // Pass correct BCP-47 tag and build payload instantly
@@ -84,7 +77,7 @@ class MainActivity : AppCompatActivity() {
                 urgencyFlag = urgency,
                 text = recognizedText
             )
-            nearbyManager.broadcastMessage(payload)
+            com.example.vaanisetu.network.NearbyConnectionsManager.broadcastMessage(payload)
         }
         val vibrator = getSystemService(android.os.Vibrator::class.java)
         
@@ -100,7 +93,6 @@ class MainActivity : AppCompatActivity() {
         setupLanguageDropdown()
         setupPttButton()
         setupModeToggle()
-        setupEmergencyPresets()
         setupMessageList()
         observeViewModel()
 
@@ -135,7 +127,7 @@ class MainActivity : AppCompatActivity() {
             }
         }
         lifecycleScope.launchWhenStarted {
-            nearbyManager.incomingPayloads.collect { payload ->
+            com.example.vaanisetu.network.NearbyConnectionsManager.incomingPayloads.collect { payload ->
                 viewModel.processNetworkPayload(payload)
             }
         }
@@ -144,22 +136,24 @@ class MainActivity : AppCompatActivity() {
     // ── View binding ─────────────────────────────────────────────────
     private fun bindViews() {
         modeIndicatorBar = findViewById(R.id.modeIndicatorBar)
-        peerCounterText = findViewById(R.id.peerCounterText)
+        btnBack = findViewById(R.id.btnBack)
         speakingIndicator = findViewById(R.id.speakingIndicator)
         languageDropdown = findViewById(R.id.languageDropdown)
         messageRecyclerView = findViewById(R.id.messageRecyclerView)
         pttButton = findViewById(R.id.pttButton)
         modeToggleLabel = findViewById(R.id.modeToggleLabel)
 
-        btnMedical = findViewById(R.id.btnEmergencyMedical)
-        btnFire = findViewById(R.id.btnEmergencyFire)
-        btnWater = findViewById(R.id.btnEmergencyWater)
+        btnBack.setOnClickListener { finish() }
 
         // Inflate the emergency overlay and attach it to the root
         val rootLayout = findViewById<androidx.constraintlayout.widget.ConstraintLayout>(R.id.main)
         val overlay = LayoutInflater.from(this).inflate(R.layout.overlay_emergency, rootLayout, false)
         rootLayout.addView(overlay)
         emergencyOverlayContainer = overlay.findViewById(R.id.emergencyOverlay)
+        
+        emergencyOverlayContainer.setOnClickListener {
+            applyMode(AppMode.PTT)
+        }
     }
 
     // ── Language dropdown ────────────────────────────────────────────
@@ -295,32 +289,7 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    // ── Emergency presets ───────────────────────────────────────────
-    private fun setupEmergencyPresets() {
-        btnMedical.setOnClickListener {
-            applyMode(AppMode.EMERGENCY)
-            emergencyOverlayContainer.findViewById<TextView>(R.id.emergencyAlertText)?.text =
-                getString(R.string.emergency_medical)
-            // Payload send will be wired in Phase 1.4
-        }
-        btnFire.setOnClickListener {
-            applyMode(AppMode.EMERGENCY)
-            emergencyOverlayContainer.findViewById<TextView>(R.id.emergencyAlertText)?.text =
-                getString(R.string.emergency_fire)
-            // Payload send will be wired in Phase 1.4
-        }
-        btnWater.setOnClickListener {
-            applyMode(AppMode.EMERGENCY)
-            emergencyOverlayContainer.findViewById<TextView>(R.id.emergencyAlertText)?.text =
-                getString(R.string.emergency_flood)
-            // Payload send will be wired in Phase 1.4
-        }
 
-        // Dismiss emergency overlay on tap
-        emergencyOverlayContainer.setOnClickListener {
-            applyMode(AppMode.PHONE)
-        }
-    }
 
     // ── Message list ─────────────────────────────────────────────────
     private fun setupMessageList() {
@@ -331,9 +300,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     // ── Public methods for other managers ─────────────────────────────
-    fun updatePeerCount(count: Int) {
-        peerCounterText.text = getString(R.string.peer_count_format, count)
-    }
+
 
     fun triggerEmergencyAlert(message: String) {
         applyMode(AppMode.EMERGENCY)

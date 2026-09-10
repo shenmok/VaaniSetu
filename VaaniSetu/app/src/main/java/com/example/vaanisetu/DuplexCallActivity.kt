@@ -28,7 +28,6 @@ import java.util.Locale
 class DuplexCallActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
 
     private lateinit var prefsManager: SharedPreferencesManager
-    private lateinit var nearbyManager: NearbyConnectionsManager
     private var speechRecognizer: SpeechRecognizer? = null
     private var tts: TextToSpeech? = null
     private var isTtsReady = false
@@ -65,12 +64,12 @@ class DuplexCallActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
         // Init TTS
         tts = TextToSpeech(this, this)
 
-        // Init Nearby (share instance concept — for MVP we create a new one)
-        nearbyManager = NearbyConnectionsManager(this, prefsManager.getUserName())
+        // Init Nearby (Singleton)
+        NearbyConnectionsManager.init(this, prefsManager.getUserName())
 
         // Observe incoming
         lifecycleScope.launch {
-            nearbyManager.incomingPayloads.collect { payload ->
+            NearbyConnectionsManager.incomingPayloads.collect { payload ->
                 addToTranscript(payload.sender, payload.text)
                 speakMessage(payload.sender + " says: " + payload.text)
             }
@@ -154,7 +153,7 @@ class DuplexCallActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
                     urgencyFlag = 0,
                     text = text
                 )
-                nearbyManager.broadcastMessage(payload)
+                NearbyConnectionsManager.broadcastMessage(payload)
 
                 // Restart STT loop
                 startListening()

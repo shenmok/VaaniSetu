@@ -31,13 +31,13 @@ class MockNearbyConnectionsTest {
 
     @Test
     fun verifyMockTransmission_TS_4_3() {
-        val manager = NearbyConnectionsManager(mockContext, "TestUser", clientForTesting = mockClient)
+        NearbyConnectionsManager.init(mockContext, "TestUser", clientForTesting = mockClient)
 
         // Add a fake endpoint
-        manager.connectedEndpoints.add("endpoint123")
+        NearbyConnectionsManager.connectedEndpoints.add("endpoint123")
 
         val message = MessagePayload("Amit", "Global", "en-IN", 0, "Test")
-        manager.broadcastMessage(message)
+        NearbyConnectionsManager.broadcastMessage(message)
 
         val payloadSlot = slot<Payload>()
         val endpointsSlot = slot<List<String>>()
