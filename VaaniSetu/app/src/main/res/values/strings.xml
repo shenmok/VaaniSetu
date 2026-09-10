@@ -71,6 +71,13 @@
     <string name="lang_english">English</string>
     <string name="lang_hindi">हिन्दी</string>
     <string name="lang_marathi">मराठी</string>
+    <string name="lang_gujarati">ગુજરાતી</string>
+    <string name="lang_kannada">ಕನ್ನಡ</string>
+    <string name="lang_malayalam">മലയാളം</string>
+    <string name="lang_tamil">தமிழ்</string>
+    <string name="lang_telugu">తెలుగు</string>
+    <string name="lang_odia">ଓଡ଼ିଆ</string>
+    <string name="lang_bengali">বাংলা</string>
 
     <!-- Permissions -->
     <string name="permissions_required">Core permissions required for Walkie-Talkie.</string>

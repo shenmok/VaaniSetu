@@ -63,27 +63,33 @@ class MainActivity : AppCompatActivity() {
         
         com.example.vaanisetu.network.NearbyConnectionsManager.init(this, prefsManager.getUserName())
         
-        speechManager = SpeechManager(this) { recognizedText ->
-            // Pass correct BCP-47 tag and build payload instantly
+        speechManager = SpeechManager(this) { recognizedText, isFinal ->
             val langCode = prefsManager.getLanguage()
             val sender = prefsManager.getUserName()
             val channel = viewModel.currentChannel.value
             val urgency = if (currentMode == AppMode.EMERGENCY) 1 else 0
-            
-            val payload = com.example.vaanisetu.network.MessagePayload(
-                sender = sender,
-                channel = channel,
-                langCode = langCode,
-                urgencyFlag = urgency,
-                text = recognizedText
-            )
-            com.example.vaanisetu.network.NearbyConnectionsManager.broadcastMessage(payload)
-            
-            // Queue our own message to show up on screen
-            viewModel.queueIncomingMessage(
-                com.example.vaanisetu.viewmodel.IncomingMessage(sender, langCode, urgency, recognizedText),
-                isOwnMessage = true
-            )
+
+            if (!isFinal) {
+                // Update live text preview
+                viewModel.updateLiveSpeechText(recognizedText)
+            } else {
+                // Final result
+                viewModel.updateLiveSpeechText("")
+                if (recognizedText.isNotBlank()) {
+                    val payload = com.example.vaanisetu.network.MessagePayload(
+                        sender = sender,
+                        channel = channel,
+                        langCode = langCode,
+                        urgencyFlag = urgency,
+                        text = recognizedText
+                    )
+                    com.example.vaanisetu.network.NearbyConnectionsManager.broadcastMessage(payload)
+                    viewModel.queueIncomingMessage(
+                        com.example.vaanisetu.viewmodel.IncomingMessage(sender, langCode, urgency, recognizedText),
+                        isOwnMessage = true
+                    )
+                }
+            }
         }
         val vibrator = getSystemService(android.os.Vibrator::class.java)
         
@@ -144,7 +150,21 @@ class MainActivity : AppCompatActivity() {
                 }
             }
         }
+        lifecycleScope.launchWhenStarted {
+            viewModel.liveSpeechText.collect { text ->
+                if (text.isBlank()) {
+                    liveSpeechPreview.visibility = android.view.View.GONE
+                } else {
+                    liveSpeechPreview.visibility = android.view.View.VISIBLE
+                    liveSpeechPreview.text = text
+                }
+            }
+        }
     }
+
+    private lateinit var btnAddChannel: TextView
+    private lateinit var tabGlobal: TextView
+    private lateinit var liveSpeechPreview: TextView
 
     // ── View binding ─────────────────────────────────────────────────
     private fun bindViews() {
@@ -155,8 +175,20 @@ class MainActivity : AppCompatActivity() {
         messageRecyclerView = findViewById(R.id.messageRecyclerView)
         pttButton = findViewById(R.id.pttButton)
         modeToggleLabel = findViewById(R.id.modeToggleLabel)
+        btnAddChannel = findViewById(R.id.btnAddChannel)
+        tabGlobal = findViewById(R.id.tabGlobal)
+        liveSpeechPreview = findViewById(R.id.liveSpeechPreview)
 
         btnBack.setOnClickListener { finish() }
+
+        tabGlobal.setOnClickListener {
+            viewModel.switchChannel("Global")
+            updateChannelTabs("Global")
+        }
+
+        btnAddChannel.setOnClickListener {
+            showCreateChannelDialog()
+        }
 
         // Inflate the emergency overlay and attach it to the root
         val rootLayout = findViewById<androidx.constraintlayout.widget.ConstraintLayout>(R.id.main)
@@ -174,32 +206,98 @@ class MainActivity : AppCompatActivity() {
         val languages = arrayOf(
             getString(R.string.lang_english),
             getString(R.string.lang_hindi),
-            getString(R.string.lang_marathi)
+            getString(R.string.lang_marathi),
+            getString(R.string.lang_gujarati),
+            getString(R.string.lang_kannada),
+            getString(R.string.lang_malayalam),
+            getString(R.string.lang_tamil),
+            getString(R.string.lang_telugu),
+            getString(R.string.lang_odia),
+            getString(R.string.lang_bengali)
         )
-        val adapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, languages)
+        
+        val tags = arrayOf(
+            "en-IN", "hi-IN", "mr-IN", "gu-IN", "kn-IN", 
+            "ml-IN", "ta-IN", "te-IN", "or-IN", "bn-IN"
+        )
+        
+        val adapter = ArrayAdapter(this, R.layout.item_spinner, languages)
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
         languageDropdown.adapter = adapter
+        languageDropdown.setPopupBackgroundResource(android.R.color.background_dark)
 
-        // Pre-select from saved preference
         val savedLang = prefsManager.getLanguage()
-        val index = when (savedLang) {
-            "hi-IN" -> 1
-            "mr-IN" -> 2
-            else -> 0
-        }
+        val index = tags.indexOf(savedLang).takeIf { it >= 0 } ?: 0
         languageDropdown.setSelection(index)
 
-        // Instantly pass correct BCP-47 tag to preferences
         languageDropdown.onItemSelectedListener = object : android.widget.AdapterView.OnItemSelectedListener {
             override fun onItemSelected(parent: android.widget.AdapterView<*>?, view: View?, position: Int, id: Long) {
-                val tag = when (position) {
-                    1 -> "hi-IN"
-                    2 -> "mr-IN"
-                    else -> "en-IN"
+                val tag = tags[position]
+                if (prefsManager.getLanguage() != tag) {
+                    prefsManager.saveLanguage(tag)
+                    
+                    // Translate entire app UI instantly
+                    androidx.appcompat.app.AppCompatDelegate.setApplicationLocales(
+                        androidx.core.os.LocaleListCompat.forLanguageTags(tag)
+                    )
                 }
-                prefsManager.saveLanguage(tag)
             }
             override fun onNothingSelected(parent: android.widget.AdapterView<*>?) {}
+        }
+    }
+
+    private fun showCreateChannelDialog() {
+        val input = android.widget.EditText(this).apply {
+            hint = getString(R.string.channel_name_hint)
+        }
+        androidx.appcompat.app.AlertDialog.Builder(this)
+            .setTitle(getString(R.string.channel_create_title))
+            .setView(input)
+            .setPositiveButton(getString(R.string.channel_create)) { _, _ ->
+                val channelName = input.text.toString().trim()
+                if (channelName.isNotEmpty()) {
+                    addChannelTab(channelName)
+                    viewModel.switchChannel(channelName)
+                    updateChannelTabs(channelName)
+                }
+            }
+            .setNegativeButton(getString(R.string.channel_cancel), null)
+            .show()
+    }
+
+    private fun addChannelTab(channelName: String) {
+        val layout = findViewById<android.widget.LinearLayout>(R.id.channelTabsLayout)
+        val newTab = TextView(this).apply {
+            text = channelName
+            setTextColor(0xFFFFFFFF.toInt())
+            textSize = 24f
+            setTypeface(null, android.graphics.Typeface.BOLD)
+            setPadding(
+                (20 * resources.displayMetrics.density).toInt(),
+                (14 * resources.displayMetrics.density).toInt(),
+                (20 * resources.displayMetrics.density).toInt(),
+                (14 * resources.displayMetrics.density).toInt()
+            )
+            setOnClickListener {
+                viewModel.switchChannel(channelName)
+                updateChannelTabs(channelName)
+            }
+        }
+        // Insert right before the + New button
+        layout.addView(newTab, layout.childCount - 1)
+    }
+
+    private fun updateChannelTabs(activeChannel: String) {
+        val layout = findViewById<android.widget.LinearLayout>(R.id.channelTabsLayout)
+        for (i in 0 until layout.childCount) {
+            val tab = layout.getChildAt(i) as TextView
+            if (tab.id == R.id.btnAddChannel) continue
+            val tabName = if (tab.id == R.id.tabGlobal) "Global" else tab.text.toString()
+            if (tabName.equals(activeChannel, ignoreCase = true)) {
+                tab.setTextColor(0xFFFFFFFF.toInt()) // active white
+            } else {
+                tab.setTextColor(0xFF888888.toInt()) // inactive gray
+            }
         }
     }
 

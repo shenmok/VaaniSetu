@@ -12,7 +12,7 @@ import android.speech.tts.TextToSpeech
 import android.speech.tts.UtteranceProgressListener
 import java.util.Locale
 
-class SpeechManager(private val context: Context, private val onSpeechResult: (String) -> Unit) : TextToSpeech.OnInitListener {
+class SpeechManager(private val context: Context, private val onSpeechResult: (String, Boolean) -> Unit) : TextToSpeech.OnInitListener {
 
     private var textToSpeech: TextToSpeech? = null
     private var speechRecognizer: SpeechRecognizer? = null
@@ -47,15 +47,20 @@ class SpeechManager(private val context: Context, private val onSpeechResult: (S
                 override fun onBufferReceived(buffer: ByteArray?) {}
                 override fun onEndOfSpeech() {}
                 override fun onError(error: Int) {
-                    onSpeechResult("") // Or handle error properly
+                    onSpeechResult("", true) // Or handle error properly
                 }
                 override fun onResults(results: Bundle?) {
                     val matches = results?.getStringArrayList(SpeechRecognizer.RESULTS_RECOGNITION)
                     if (!matches.isNullOrEmpty()) {
-                        onSpeechResult(matches[0])
+                        onSpeechResult(matches[0], true)
                     }
                 }
-                override fun onPartialResults(partialResults: Bundle?) {}
+                override fun onPartialResults(partialResults: Bundle?) {
+                    val matches = partialResults?.getStringArrayList(SpeechRecognizer.RESULTS_RECOGNITION)
+                    if (!matches.isNullOrEmpty()) {
+                        onSpeechResult(matches[0], false)
+                    }
+                }
                 override fun onEvent(eventType: Int, params: Bundle?) {}
             })
         }

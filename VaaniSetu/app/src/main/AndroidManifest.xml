@@ -21,7 +21,8 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/Theme.VaaniSetu">
+        android:theme="@style/Theme.VaaniSetu"
+        android:localeConfig="@xml/locales_config">
 
         <!-- HOME is the launcher — routes to Onboarding if needed -->
         <activity

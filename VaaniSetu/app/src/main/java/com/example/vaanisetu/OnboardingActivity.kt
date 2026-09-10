@@ -26,9 +26,15 @@ class OnboardingActivity : AppCompatActivity() {
     private lateinit var micButton: ImageButton
 
     // Ordered list of language names to display in the spinner
-    private val languageDisplayNames = arrayOf("English", "Hindi", "Marathi")
+    private val languageDisplayNames = arrayOf(
+        "English", "हिन्दी", "मराठी", "ગુજરાતી", "ಕನ್ನಡ", 
+        "മലയാളം", "தமிழ்", "తెలుగు", "ଓଡ଼ିଆ", "বাংলা"
+    )
     // Corresponding BCP-47 language codes required by Phase 1 limits
-    private val languageCodes = arrayOf("en-IN", "hi-IN", "mr-IN")
+    private val languageCodes = arrayOf(
+        "en-IN", "hi-IN", "mr-IN", "gu-IN", "kn-IN", 
+        "ml-IN", "ta-IN", "te-IN", "or-IN", "bn-IN"
+    )
 
     private val permissionLauncher = registerForActivityResult(
         ActivityResultContracts.RequestMultiplePermissions()
@@ -86,6 +92,11 @@ class OnboardingActivity : AppCompatActivity() {
             prefsManager.saveLanguage(selectedLangCode)
             prefsManager.setOnboardingCompleted()
 
+            // Translate entire app UI instantly
+            androidx.appcompat.app.AppCompatDelegate.setApplicationLocales(
+                androidx.core.os.LocaleListCompat.forLanguageTags(selectedLangCode)
+            )
+
             startActivity(Intent(this, HomeActivity::class.java))
             finish()
         }
@@ -97,9 +108,10 @@ class OnboardingActivity : AppCompatActivity() {
     }
 
     private fun setupSpinner() {
-        val adapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, languageDisplayNames)
+        val adapter = ArrayAdapter(this, R.layout.item_spinner, languageDisplayNames)
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
         languageSpinner.adapter = adapter
+        languageSpinner.setPopupBackgroundResource(android.R.color.background_dark)
 
         // System language detection for default selection
         val defaultLang = Locale.getDefault().language

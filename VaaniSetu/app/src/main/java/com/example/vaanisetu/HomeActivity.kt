@@ -142,29 +142,42 @@ class HomeActivity : AppCompatActivity() {
         val languages = arrayOf(
             getString(R.string.lang_english),
             getString(R.string.lang_hindi),
-            getString(R.string.lang_marathi)
+            getString(R.string.lang_marathi),
+            getString(R.string.lang_gujarati),
+            getString(R.string.lang_kannada),
+            getString(R.string.lang_malayalam),
+            getString(R.string.lang_tamil),
+            getString(R.string.lang_telugu),
+            getString(R.string.lang_odia),
+            getString(R.string.lang_bengali)
         )
-        val adapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, languages)
+        
+        val tags = arrayOf(
+            "en-IN", "hi-IN", "mr-IN", "gu-IN", "kn-IN", 
+            "ml-IN", "ta-IN", "te-IN", "or-IN", "bn-IN"
+        )
+        
+        val adapter = ArrayAdapter(this, R.layout.item_spinner, languages)
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
         languageDropdown.adapter = adapter
+        languageDropdown.setPopupBackgroundResource(android.R.color.background_dark)
 
         val savedLang = prefsManager.getLanguage()
-        val index = when (savedLang) {
-            "hi-IN" -> 1
-            "mr-IN" -> 2
-            else -> 0
-        }
+        val index = tags.indexOf(savedLang).takeIf { it >= 0 } ?: 0
         languageDropdown.setSelection(index)
 
         languageDropdown.onItemSelectedListener = object : android.widget.AdapterView.OnItemSelectedListener {
             override fun onItemSelected(parent: android.widget.AdapterView<*>?, view: View?, position: Int, id: Long) {
-                val tag = when (position) {
-                    1 -> "hi-IN"
-                    2 -> "mr-IN"
-                    else -> "en-IN"
+                val tag = tags[position]
+                if (prefsManager.getLanguage() != tag) {
+                    prefsManager.saveLanguage(tag)
+                    tts?.language = Locale.forLanguageTag(tag)
+                    
+                    // Translate entire app UI instantly
+                    androidx.appcompat.app.AppCompatDelegate.setApplicationLocales(
+                        androidx.core.os.LocaleListCompat.forLanguageTags(tag)
+                    )
                 }
-                prefsManager.saveLanguage(tag)
-                tts?.language = Locale.forLanguageTag(tag)
             }
             override fun onNothingSelected(parent: android.widget.AdapterView<*>?) {}
         }

@@ -57,6 +57,12 @@ class WalkieTalkieViewModel(
     private val _channelMessages = MutableStateFlow<List<IncomingMessage>>(emptyList())
     val channelMessages: StateFlow<List<IncomingMessage>> = _channelMessages.asStateFlow()
 
+    private val _liveSpeechText = MutableStateFlow("")
+    val liveSpeechText: StateFlow<String> = _liveSpeechText.asStateFlow()
+
+    // Tracks last message timestamp to concatenate if < 30s
+    private var lastOwnMessageTime = 0L
+
     fun switchChannel(newChannel: String) {
         _currentChannel.value = newChannel
         _channelMessages.value = emptyList() // clear history on switch for MVP
@@ -78,17 +84,40 @@ class WalkieTalkieViewModel(
         }
     }
 
+    fun updateLiveSpeechText(text: String) {
+        _liveSpeechText.value = text
+    }
+
     fun queueIncomingMessage(message: IncomingMessage, isOwnMessage: Boolean = false) {
         ttsQueue.add(message)
         
-        // Update UI
-        _channelMessages.value = _channelMessages.value + message
+        val now = System.currentTimeMillis()
+        val currentMessages = _channelMessages.value.toMutableList()
         
-        // Persist to Room DB (run on IO thread normally, but DAO isn't suspend per workaround)
+        if (isOwnMessage) {
+            // Concatenate if within 30 seconds
+            if (currentMessages.isNotEmpty() && (now - lastOwnMessageTime) < 30_000) {
+                val lastMsg = currentMessages.last()
+                if (lastMsg.sender == message.sender) {
+                    val combinedText = lastMsg.text + " " + message.text
+                    currentMessages[currentMessages.lastIndex] = lastMsg.copy(text = combinedText)
+                    _channelMessages.value = currentMessages
+                } else {
+                    _channelMessages.value = currentMessages + message
+                }
+            } else {
+                _channelMessages.value = currentMessages + message
+            }
+            lastOwnMessageTime = now
+        } else {
+            _channelMessages.value = currentMessages + message
+        }
+        
+        // Persist to Room DB
         viewModelScope.launch(kotlinx.coroutines.Dispatchers.IO) {
             messageDao?.insertMessage(
                 com.example.vaanisetu.data.local.entity.MessageEntity(
-                    timestamp = System.currentTimeMillis(),
+                    timestamp = now,
                     sender = message.sender,
                     channelId = _currentChannel.value,
                     content = message.text,
@@ -99,18 +128,14 @@ class WalkieTalkieViewModel(
         }
         
         if (message.urgencyFlag == 1) {
-            // Emergency: Bypass stealth, play audio, emit UI event
             viewModelScope.launch { _emergencyEvent.emit(message) }
             if (!isOwnMessage) {
                 speechManager?.speak(message.text, message.sender, message.langCode, message.urgencyFlag)
             }
         } else {
-            // Normal message
             if (stealthManager?.isStealthModeActive?.value == true) {
-                // Stealth Mode active: Vibrate, no TTS
                 vibrator?.vibrate(VibrationEffect.createOneShot(100, VibrationEffect.DEFAULT_AMPLITUDE))
             } else if (!isOwnMessage) {
-                // Normal mode
                 speechManager?.speak(message.text, message.sender, message.langCode, message.urgencyFlag)
             }
         }

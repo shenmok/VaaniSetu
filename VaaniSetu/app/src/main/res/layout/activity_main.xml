@@ -94,11 +94,11 @@
                 android:id="@+id/tabGlobal"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:paddingHorizontal="14dp"
-                android:paddingVertical="9dp"
-                android:text="@string/channel_global"
+                android:paddingHorizontal="20dp"
+                android:paddingVertical="14dp"
+                android:text="🌐"
                 android:textColor="#FFFFFF"
-                android:textSize="14sp"
+                android:textSize="24sp"
                 android:textStyle="bold"
                 android:background="?attr/selectableItemBackground" />
 
@@ -107,11 +107,11 @@
                 android:id="@+id/btnAddChannel"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:paddingHorizontal="14dp"
-                android:paddingVertical="9dp"
-                android:text="@string/channel_add_new"
+                android:paddingHorizontal="20dp"
+                android:paddingVertical="14dp"
+                android:text="➕"
                 android:textColor="#888888"
-                android:textSize="14sp"
+                android:textSize="24sp"
                 android:background="?attr/selectableItemBackgroundBorderless" />
 
         </LinearLayout>
@@ -157,6 +157,23 @@
             app:tint="#FFFFFF" />
 
     </FrameLayout>
+
+    <!-- ========== LIVE STT PREVIEW ========== -->
+    <TextView
+        android:id="@+id/liveSpeechPreview"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="12dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:textAlignment="center"
+        android:textColor="#FFFFFF"
+        android:textSize="20sp"
+        android:textStyle="italic"
+        android:visibility="gone"
+        app:layout_constraintBottom_toTopOf="@id/modeToggleLabel"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
 
     <!-- ========== MODE TOGGLE (Phone / PTT) ========== -->
     <TextView
