@@ -25,4 +25,7 @@ interface MessageDao {
 
     @Query("DELETE FROM messages WHERE channelId != 'Global' AND channelId IN (SELECT channelId FROM messages WHERE channelId != 'Global' GROUP BY channelId HAVING MAX(timestamp) <= :timeThreshold)")
     fun deleteInactiveChannels(timeThreshold: Long)
+    
+    @Query("UPDATE messages SET sender = :newName WHERE sender = :oldName")
+    fun updateSenderName(oldName: String, newName: String)
 }

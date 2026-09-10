@@ -110,6 +110,10 @@ class MainActivity : AppCompatActivity() {
         // Start strictly in PTT Mode (Orange)
         applyMode(AppMode.PTT)
         
+        // Immediately enforce Global channel as default UI state
+        viewModel.switchChannel("Global")
+        updateChannelTabs("Global")
+        
         // Restore active channels and cleanup expired ones
         lifecycleScope.launch(kotlinx.coroutines.Dispatchers.IO) {
             val fiveMinsAgo = System.currentTimeMillis() - (5 * 60 * 1000)
@@ -117,8 +121,8 @@ class MainActivity : AppCompatActivity() {
             // 1. Delete history for channels that haven't been active in 5 mins
             db.messageDao().deleteInactiveChannels(fiveMinsAgo)
             
-            // 2. Fetch remaining active channels
-            val activeChannels = db.messageDao().getActiveChannels(fiveMinsAgo)
+            // 2. Fetch active channels from SharedPreferences (survives empty channels & app reloads)
+            val activeChannels = prefsManager.getActiveChannels()
             
             kotlinx.coroutines.withContext(kotlinx.coroutines.Dispatchers.Main) {
                 for (channel in activeChannels) {
@@ -167,6 +171,10 @@ class MainActivity : AppCompatActivity() {
                 messageAdapter.setMessages(messages)
                 if (messages.isNotEmpty()) {
                     messageRecyclerView.scrollToPosition(messages.size - 1)
+                    val activeChannel = viewModel.currentChannel.value
+                    if (activeChannel != "Global") {
+                        prefsManager.updateChannelActivity(activeChannel, messages.last().timestamp)
+                    }
                 }
             }
         }
@@ -276,6 +284,7 @@ class MainActivity : AppCompatActivity() {
             .setPositiveButton(getString(R.string.channel_create)) { _, _ ->
                 val channelName = input.text.toString().trim()
                 if (channelName.isNotEmpty()) {
+                    prefsManager.updateChannelActivity(channelName) // Save immediately so it survives recreations
                     addChannelTab(channelName)
                     viewModel.switchChannel(channelName)
                     updateChannelTabs(channelName)

@@ -81,12 +81,23 @@ class OnboardingActivity : AppCompatActivity() {
         startButton.setOnClickListener {
             val name = nameInput.text.toString().trim()
             if (name.isEmpty()) {
-                nameInput.error = "Please enter your name"
+                Toast.makeText(this, "Please enter your name", Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
             }
-
-            val selectedIndex = languageSpinner.selectedItemPosition
-            val selectedLangCode = languageCodes[selectedIndex]
+            
+            val selectedLangCode = languageCodes[languageSpinner.selectedItemPosition]
+            val oldName = prefsManager.getUserName()
+            
+            // If they changed their name in Edit Mode, proactively update all their old messages in the database
+            if (isEditMode && oldName != name && oldName != "User") {
+                kotlinx.coroutines.GlobalScope.launch(kotlinx.coroutines.Dispatchers.IO) {
+                    val db = androidx.room.Room.databaseBuilder(
+                        applicationContext,
+                        com.example.vaanisetu.data.local.AppDatabase::class.java, "vaanisetu-db"
+                    ).build()
+                    db.messageDao().updateSenderName(oldName, name)
+                }
+            }
 
             prefsManager.saveUserName(name)
             prefsManager.saveLanguage(selectedLangCode)
