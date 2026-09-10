@@ -54,6 +54,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var speechManager: SpeechManager
     private lateinit var stealthManager: StealthManager
     private lateinit var viewModel: WalkieTalkieViewModel
+    private lateinit var db: com.example.vaanisetu.data.local.AppDatabase
 
     // ── Lifecycle ────────────────────────────────────────────────────
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -96,7 +97,7 @@ class MainActivity : AppCompatActivity() {
         val vibrator = getSystemService(android.os.Vibrator::class.java)
         
         // Initialize Room DB
-        val db = androidx.room.Room.databaseBuilder(
+        db = androidx.room.Room.databaseBuilder(
             applicationContext,
             com.example.vaanisetu.data.local.AppDatabase::class.java, "vaanisetu-db"
         ).build()
@@ -123,13 +124,8 @@ class MainActivity : AppCompatActivity() {
             // 1. Delete history for channels that haven't been active in 5 mins
             db.messageDao().deleteInactiveChannels(fiveMinsAgo)
             
-            // 2. Fetch active channels from SharedPreferences (survives empty channels & app reloads)
-            val activeChannels = prefsManager.getActiveChannels()
-            
-            kotlinx.coroutines.withContext(kotlinx.coroutines.Dispatchers.Main) {
-                for (channel in activeChannels) {
-                    addChannelTab(channel)
-                }
+            withContext(kotlinx.coroutines.Dispatchers.Main) {
+                refreshChannelTabs()
                 // Explicitly trigger Global channel fetch to ensure UI populates immediately
                 viewModel.switchChannel("Global")
                 updateChannelTabs("Global")
@@ -140,6 +136,15 @@ class MainActivity : AppCompatActivity() {
     override fun onResume() {
         super.onResume()
         stealthManager.start()
+
+        // Re-check channel expiration and cleanup dead tabs on resume
+        lifecycleScope.launch(kotlinx.coroutines.Dispatchers.IO) {
+            val fiveMinsAgo = System.currentTimeMillis() - (5 * 60 * 1000)
+            db.messageDao().deleteInactiveChannels(fiveMinsAgo)
+            withContext(kotlinx.coroutines.Dispatchers.Main) {
+                refreshChannelTabs()
+            }
+        }
     }
 
     override fun onPause() {
@@ -296,8 +301,37 @@ class MainActivity : AppCompatActivity() {
             .show()
     }
 
+    private fun refreshChannelTabs() {
+        val layout = findViewById<android.widget.LinearLayout>(R.id.channelTabsLayout)
+        val viewsToRemove = mutableListOf<View>()
+        for (i in 0 until layout.childCount) {
+            val child = layout.getChildAt(i)
+            if (child.id != R.id.tabGlobal && child.id != R.id.btnAddChannel) {
+                viewsToRemove.add(child)
+            }
+        }
+        viewsToRemove.forEach { layout.removeView(it) }
+
+        val activeChannels = prefsManager.getActiveChannels()
+        for (channel in activeChannels) {
+            addChannelTab(channel)
+        }
+
+        val current = viewModel.currentChannel.value
+        if (current != "Global" && !activeChannels.contains(current)) {
+            viewModel.switchChannel("Global")
+        }
+        updateChannelTabs(viewModel.currentChannel.value)
+    }
+
     private fun addChannelTab(channelName: String) {
         val layout = findViewById<android.widget.LinearLayout>(R.id.channelTabsLayout)
+        for (i in 0 until layout.childCount) {
+            val child = layout.getChildAt(i)
+            if (child is TextView && child.text.toString().equals(channelName, ignoreCase = true)) {
+                return // Avoid duplicate tabs
+            }
+        }
         val newTab = TextView(this).apply {
             text = channelName
             setTextColor(0xFFFFFFFF.toInt())

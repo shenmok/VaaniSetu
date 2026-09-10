@@ -68,4 +68,12 @@ class SharedPreferencesManager(context: Context) {
         }
         return map
     }
+
+    fun clearAllData() {
+        prefs.edit().clear().apply()
+    }
+
+    fun purgeChannels() {
+        prefs.edit().remove("ACTIVE_CHANNELS").apply()
+    }
 }
