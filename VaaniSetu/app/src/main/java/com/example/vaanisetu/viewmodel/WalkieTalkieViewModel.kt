@@ -54,8 +54,12 @@ class WalkieTalkieViewModel(
     private val _currentChannel = MutableStateFlow("Global")
     val currentChannel: StateFlow<String> = _currentChannel.asStateFlow()
 
+    private val _channelMessages = MutableStateFlow<List<IncomingMessage>>(emptyList())
+    val channelMessages: StateFlow<List<IncomingMessage>> = _channelMessages.asStateFlow()
+
     fun switchChannel(newChannel: String) {
         _currentChannel.value = newChannel
+        _channelMessages.value = emptyList() // clear history on switch for MVP
     }
 
     fun processNetworkPayload(payload: com.example.vaanisetu.network.MessagePayload) {
@@ -74,8 +78,11 @@ class WalkieTalkieViewModel(
         }
     }
 
-    fun queueIncomingMessage(message: IncomingMessage) {
+    fun queueIncomingMessage(message: IncomingMessage, isOwnMessage: Boolean = false) {
         ttsQueue.add(message)
+        
+        // Update UI
+        _channelMessages.value = _channelMessages.value + message
         
         // Persist to Room DB (run on IO thread normally, but DAO isn't suspend per workaround)
         viewModelScope.launch(kotlinx.coroutines.Dispatchers.IO) {
@@ -94,13 +101,15 @@ class WalkieTalkieViewModel(
         if (message.urgencyFlag == 1) {
             // Emergency: Bypass stealth, play audio, emit UI event
             viewModelScope.launch { _emergencyEvent.emit(message) }
-            speechManager?.speak(message.text, message.sender, message.langCode, message.urgencyFlag)
+            if (!isOwnMessage) {
+                speechManager?.speak(message.text, message.sender, message.langCode, message.urgencyFlag)
+            }
         } else {
             // Normal message
             if (stealthManager?.isStealthModeActive?.value == true) {
                 // Stealth Mode active: Vibrate, no TTS
                 vibrator?.vibrate(VibrationEffect.createOneShot(100, VibrationEffect.DEFAULT_AMPLITUDE))
-            } else {
+            } else if (!isOwnMessage) {
                 // Normal mode
                 speechManager?.speak(message.text, message.sender, message.langCode, message.urgencyFlag)
             }

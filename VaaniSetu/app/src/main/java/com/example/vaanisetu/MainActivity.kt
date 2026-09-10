@@ -78,6 +78,12 @@ class MainActivity : AppCompatActivity() {
                 text = recognizedText
             )
             com.example.vaanisetu.network.NearbyConnectionsManager.broadcastMessage(payload)
+            
+            // Queue our own message to show up on screen
+            viewModel.queueIncomingMessage(
+                com.example.vaanisetu.viewmodel.IncomingMessage(sender, langCode, urgency, recognizedText),
+                isOwnMessage = true
+            )
         }
         val vibrator = getSystemService(android.os.Vibrator::class.java)
         
@@ -128,6 +134,14 @@ class MainActivity : AppCompatActivity() {
         lifecycleScope.launchWhenStarted {
             com.example.vaanisetu.network.NearbyConnectionsManager.incomingPayloads.collect { payload ->
                 viewModel.processNetworkPayload(payload)
+            }
+        }
+        lifecycleScope.launchWhenStarted {
+            viewModel.channelMessages.collect { messages ->
+                messageAdapter.setMessages(messages)
+                if (messages.isNotEmpty()) {
+                    messageRecyclerView.scrollToPosition(messages.size - 1)
+                }
             }
         }
     }
@@ -273,12 +287,15 @@ class MainActivity : AppCompatActivity() {
 
 
 
+    private lateinit var messageAdapter: com.example.vaanisetu.ui.MessageAdapter
+
     // ── Message list ─────────────────────────────────────────────────
     private fun setupMessageList() {
+        messageAdapter = com.example.vaanisetu.ui.MessageAdapter()
         messageRecyclerView.layoutManager = LinearLayoutManager(this).apply {
             stackFromEnd = true
         }
-        // Adapter will be connected in Phase 1.5/1.6 when channel logic is built
+        messageRecyclerView.adapter = messageAdapter
     }
 
     // ── Public methods for other managers ─────────────────────────────
