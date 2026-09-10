@@ -33,7 +33,7 @@ VaaniSetu is an offline-first, peer-to-peer communication application designed f
 - **Hardware Integration:** ESP32 Heltec V3 / LilyGO T-Beam (Sub-GHz LoRa)
 
 ## 6. Architecture
-See [docs/Architecture2.md](docs/Architecture2.md) for full Grand Finale implementation details.
+See [docs/Architecture2.md](docs/Architecture2.md) for full implementation details.
 
 ```text
 +-------------------------+                               +-------------------------+
