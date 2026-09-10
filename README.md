@@ -1,6 +1,6 @@
 # VaaniSetu
 
-**The Offline Voice Bridge for First Responders.**
+**Zero-Internet Neural Voice Mesh for Disaster Relief**
 
 ## 1. Project Information
 - **Project Title:** VaaniSetu (वाणी सेतु)
@@ -11,14 +11,14 @@
 - **Team Name:** AlomVilom
 
 ## 2. Problem Statement
-In disaster scenarios or remote areas lacking internet/cellular connectivity, communication is critical. Traditional walkie-talkies rely on heavy analog audio transmission which limits range, congests bandwidth, and lacks multilingual support, causing difficulty for rescue workers and locals to coordinate effectively.
+In disaster scenarios or remote areas lacking internet/cellular connectivity, communication is critical. Traditional handheld transceivers rely on heavy analog audio transmission which limits range, congests bandwidth, and lacks multilingual support, causing difficulty for rescue workers and locals to coordinate effectively.
 
 ## 3. Proposed Solution
 VaaniSetu is an offline-first, peer-to-peer communication application designed for disaster relief. By converting **Speech $\rightarrow$ Text** on the sender device, transmitting a tiny byte-level payload over a local radio mesh (Wi-Fi Direct / Bluetooth / LoRa), and re-synthesizing voice via **Text $\rightarrow$ Speech** on the receiving device, VaaniSetu slashes bandwidth consumption by over 1,000x compared to raw audio.
 
 ## 4. Key Features
 - **Offline P2P Mesh:** Operates completely without cloud, cellular towers, or internet.
-- **Dynamic 3-Tier Modes:** Full-Duplex Phone, Push-to-Talk (PTT) Walkie-Talkie, and Emergency Distress broadcast (overrides DND).
+- **Dynamic 3-Tier Modes:** Full-Duplex Phone, Push-to-Talk (PTT) Tactical Relay, and Emergency Distress broadcast (overrides DND).
 - **Virtual Channels:** Zero-latency channel switching with smart activity garbage-collection.
 - **10+ Native Indian Languages:** Supports translation and native TTS dialects across India.
 - **Stealth Mode & Haptics:** Face-down detection triggers Morse-like haptic vibrations for hostile environments.
@@ -89,7 +89,7 @@ See [submission/PRESENTATION.md](submission/PRESENTATION.md) or directly access 
 [Presentation Folder](https://drive.google.com/drive/folders/1Nc8ddVIPweR6ASYsve_-KXlhzcCHbKub?usp=sharing)
 
 ## 9. Demo Video
-Watch the demonstration of VaaniSetu's zero-internet mesh walkie-talkie in action:
+Watch the demonstration of VaaniSetu's zero-internet neural voice mesh in action:
 
 See [submission/DEMO.md](submission/DEMO.md) or access the links below:
 - **YouTube Link:** [https://www.youtube.com/watch?v=DC2WXxVYYIw](https://www.youtube.com/watch?v=DC2WXxVYYIw)
