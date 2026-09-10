@@ -92,12 +92,11 @@ class MainActivity : AppCompatActivity() {
         bindViews()
         setupLanguageDropdown()
         setupPttButton()
-        setupModeToggle()
         setupMessageList()
         observeViewModel()
 
-        // Start in Phone Mode (Blue)
-        applyMode(AppMode.PHONE)
+        // Start strictly in PTT Mode (Orange)
+        applyMode(AppMode.PTT)
     }
 
     override fun onResume() {
@@ -252,27 +251,9 @@ class MainActivity : AppCompatActivity() {
     }
 
     // ── Mode switching ───────────────────────────────────────────────
-    private fun setupModeToggle() {
-        // Long-press PTT to toggle between Phone and PTT modes
-        pttButton.setOnLongClickListener {
-            when (currentMode) {
-                AppMode.PHONE -> applyMode(AppMode.PTT)
-                AppMode.PTT -> applyMode(AppMode.PHONE)
-                AppMode.EMERGENCY -> {} // Cannot toggle during emergency
-            }
-            true
-        }
-    }
-
     private fun applyMode(mode: AppMode) {
         currentMode = mode
         when (mode) {
-            AppMode.PHONE -> {
-                modeIndicatorBar.setBackgroundColor(0xFF1A237E.toInt())  // Navy
-                pttButton.setBackgroundResource(R.drawable.bg_ptt_button_blue)
-                modeToggleLabel.text = getString(R.string.mode_phone)
-                emergencyOverlayContainer.visibility = View.GONE
-            }
             AppMode.PTT -> {
                 modeIndicatorBar.setBackgroundColor(0xFFFF6F00.toInt())  // Amber
                 pttButton.setBackgroundResource(R.drawable.bg_ptt_button_orange)
@@ -286,6 +267,7 @@ class MainActivity : AppCompatActivity() {
                 // Design1.md: full-screen solid red override
                 emergencyOverlayContainer.visibility = View.VISIBLE
             }
+            else -> {}
         }
     }
 
