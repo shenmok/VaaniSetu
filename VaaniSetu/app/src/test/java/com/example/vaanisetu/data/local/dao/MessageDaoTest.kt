@@ -25,7 +25,7 @@ class MessageDaoTest {
         // Mock insertion
         every { dao.insertMessage(any()) } answers {
             fakeDb.add(firstArg())
-            Unit
+            1L
         }
 
         // Mock querying logic that Room would normally generate

@@ -122,7 +122,7 @@ class HomeActivity : AppCompatActivity() {
         try { NearbyConnectionsManager.stopAll() } catch (_: Exception) {}
     }
 
-    private lateinit var btnSimulatePeer: Button
+    private lateinit var btnSimulatePeer: MaterialButton
 
     // ── Views ────────────────────────────────────────────────────────
     private fun bindViews() {

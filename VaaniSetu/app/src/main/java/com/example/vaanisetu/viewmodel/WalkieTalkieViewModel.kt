@@ -44,10 +44,6 @@ class WalkieTalkieViewModel(
     // For test verification
     val ttsQueue = mutableListOf<IncomingMessage>()
 
-    init {
-        switchChannel("Global")
-    }
-
     fun onPttPressed(langCode: String) {
         _pttState.value = PttState.LISTENING
         viewModelScope.launch {
@@ -70,6 +66,10 @@ class WalkieTalkieViewModel(
 
     private val _liveSpeechText = MutableStateFlow("")
     val liveSpeechText: StateFlow<String> = _liveSpeechText.asStateFlow()
+
+    init {
+        switchChannel("Global")
+    }
 
     // Tracks last message timestamp to concatenate if < 30s
     private var lastOwnMessageTime = 0L

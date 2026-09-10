@@ -15,6 +15,7 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import com.example.vaanisetu.utils.SharedPreferencesManager
+import kotlinx.coroutines.launch
 import java.util.Locale
 
 class OnboardingActivity : AppCompatActivity() {
