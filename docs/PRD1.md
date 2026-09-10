@@ -45,7 +45,8 @@
   - Channels appear as tabs/lists.
   - Channel switching is instant via text packet tags (no network reconnection).
   - A pulsing green 'speaking' indicator appears on active channels.
-  - Local text transcript history is saved per channel.
+  - Local text transcript history is saved per channel using SQLite (Room DB).
+  - **Garbage Collection:** Custom channels are automatically deleted and their history purged after 5 minutes of total peer inactivity to maintain tactical focus.
   - Simultaneous messages are queued and read sequentially (e.g., "Amit says: [message]").
 
 ### 4.4 Multilingual Support
@@ -92,6 +93,7 @@
 - [x] Supports specified languages.
 - [x] Runs on low/mid-range Android devices.
 - [x] Open-source libraries only (Google Nearby Connections, Native APIs).
+- [x] Debug Utilities: Includes a "Simulate Peer" mode allowing developers to test multi-peer environments, queueing, and DND emergency bypasses on a single emulator.
 
 ## 9. Success Metrics
 - Successful P2P connection established within 5 seconds.
