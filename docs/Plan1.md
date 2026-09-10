@@ -31,18 +31,21 @@
 - [x] Build Profile setup screen (User Name input).
 - [x] Build Language selection screen (English, Hindi, Marathi).
 - [x] Save preferences using `SharedPreferencesManager.kt`.
-- [x] Route to `MainActivity` if onboarding is complete.
+- [x] Route to `HomeActivity` if onboarding is complete.
+- [x] Support edit mode (profile icon → re-edit name/language).
+- [x] Re-request missing permissions even after onboarding.
 
-**Acceptance Criteria:** App launches Onboarding on first run, asks for permissions, saves Name/Lang, then boots to Main. Subsequent launches bypass Onboarding.
+**Acceptance Criteria:** App launches Onboarding on first run, asks for permissions, saves Name/Lang, then boots to Home. Subsequent launches bypass Onboarding. Profile can be re-edited.
 
 ## Phase 1.3: Networking (Nearby Connections)
 **Dependencies:** Phase 1.1
 - [x] Create `NearbyConnectionsManager.kt`.
 - [x] Implement `startAdvertising()` and `startDiscovery()` using P2P_CLUSTER strategy.
 - [x] Handle `ConnectionLifecycleCallback` (auto-accept connections).
-- [x] Handle `PayloadCallback` for receiving JSON messages (sender name, channel, message type, payload text).
+- [x] Handle `PayloadCallback` for receiving messages (sender name, channel, message type, payload text).
 - [x] Implement `sendMessage(payload)` to all connected endpoints.
-- [x] Expose connected peers count via `LiveData` or `StateFlow`.
+- [x] Expose connected peers count via `StateFlow`.
+- [x] Track peer display names from handshake (ConnectionInfo.endpointName).
 
 **Acceptance Criteria:** Two devices can discover each other, connect automatically, and exchange text payloads. Connected peer count updates accurately.
 
@@ -57,38 +60,56 @@
 
 **Acceptance Criteria:** App can convert voice to text and text to voice in the selected language. TTS respects stealth mode.
 
-## Phase 1.5: Main UI & Channel System
-**Dependencies:** Phase 1.2, Phase 1.3, Phase 1.4
-- [x] Create `MainActivity.kt` and `activity_main.xml` using Material 3 Views.
-- [x] Build Channel Selector UI (Spinner or Tabs) + "Create Channel" dialog.
-- [x] Implement Channel switching logic (filter incoming/outgoing messages by channel tag).
-- [x] Build Message History RecyclerView with `MessageAdapter.kt`.
-- [x] Integrate `Room DB` to load/save messages for the active channel.
-- [x] Implement Speaking Indicator UI (pulsing mic icon when `SpeechRecognizer` is active or TTS is playing).
+## Phase 1.5: Home Screen & Connected Devices
+**Dependencies:** Phase 1.2, Phase 1.3
+- [x] Create `HomeActivity.kt` and `activity_home.xml` as new launcher.
+- [x] Build Connected Peers RecyclerView with `PeerAdapter.kt`.
+- [x] Add Call button per peer (launches DuplexCallActivity).
+- [x] Add PTT Channel Mode button (launches MainActivity).
+- [x] Add single ALERT button (sends emergency payload + overlay).
+- [x] Add connectivity indicators (BT/WiFi icons).
+- [x] Add profile icon (opens OnboardingActivity in edit mode).
+- [x] Add language dropdown on Home screen.
 
-**Acceptance Criteria:** Users can create channels, switch channels, and view channel-specific message history.
+**Acceptance Criteria:** Home screen shows connected peers, connectivity status, and provides clear navigation to all modes.
 
-## Phase 1.6: App Modes (Phone, PTT, Emergency)
+## Phase 1.6: Full Duplex Call
+**Dependencies:** Phase 1.4, Phase 1.5
+- [x] Create `DuplexCallActivity.kt` and `activity_duplex_call.xml`.
+- [x] Implement continuous STT loop (auto-restart on result/error).
+- [x] Implement echo suppression (pause STT while TTS speaks).
+- [x] Show live transcript (sender, text, timestamp).
+- [x] TTS reads incoming as "[Name] says: [text]" using `QUEUE_ADD`.
+
+**Acceptance Criteria:** Two-way voice-to-text-to-voice call with live transcript and no echo loops.
+
+## Phase 1.7: PTT Channel Mode
 **Dependencies:** Phase 1.5
-- [x] Implement Phone Mode (Full-duplex UI toggle, continuous STT listening).
-- [x] Implement PTT Mode (Half-duplex, Hold-to-talk button, starts STT on touch down, stops on touch up).
-- [x] Implement Emergency Alert Mode (Override button).
-  - Sends high-priority payload.
-  - Receiver ignores stealth/mute, plays alert sound at Max Volume.
-  - UI flashes red.
+- [x] Refactor `MainActivity.kt` for PTT-only scope.
+- [x] Channel Selector UI (Tabs) + "Create Channel" dialog.
+- [x] Channel switching logic (filter by channel tag).
+- [x] Message History RecyclerView.
+- [x] Integrate Room DB to persist messages.
+- [x] PTT button with haptic feedback (11ms + 43ms two-pulse).
+- [x] Speaking Indicator (size pulse 8dp→11dp).
+- [x] All messages read as "[Name] says: [text]" via TTS.
 
-**Acceptance Criteria:** User can toggle between Phone and PTT modes. Emergency button overrides receiver settings.
+**Acceptance Criteria:** Users can create channels, switch channels, hold-to-talk, and hear messages spoken aloud.
 
-## Phase 1.7: Settings & Polish
-**Dependencies:** Phase 1.6
-- [ ] Create `SettingsActivity.kt` and `activity_settings.xml`.
-- [ ] Add toggles for Alert Preference (Max Volume / Vibrate / Muted), User Name, and Language.
-- [x] Ensure all hardcoded strings are moved to `strings.xml`.
+## Phase 1.8: Emergency Alert System
+**Dependencies:** Phase 1.5
+- [x] Single ALERT button on Home screen.
+- [x] Emergency overlay (solid #B71C1C, 31sp bold white text).
+- [x] `USAGE_ALARM` + max volume to bypass DND.
+- [x] Incoming `urgency_flag=1` triggers overlay + max volume TTS automatically.
+- [x] Overlay dismissible by tap.
+- [x] All strings localized (EN/HI/MR).
+- [x] All hardcoded strings moved to `strings.xml`.
 
-**Acceptance Criteria:** Settings persist and affect app behavior immediately.
+**Acceptance Criteria:** Emergency alert sends and receives at max volume, bypasses DND, and shows full-screen red overlay.
 
-## Phase 1.8: Demo Video Preparation
-**Dependencies:** Phases 1.1 - 1.7
+## Phase 1.9: Demo Video Preparation
+**Dependencies:** Phases 1.1 - 1.8
 - [ ] Write demo script covering: Onboarding, PTT, Offline translation (simulated via native APIs), Emergency Alert, Stealth Mode.
 - [ ] Prepare 2 physical Android devices for recording.
 - [ ] Record 3-minute video showing real-time offline communication.
