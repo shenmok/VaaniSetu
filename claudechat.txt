@@ -1,0 +1,106 @@
+Before the deck content — two things in your directive I want to flag rather than silently absorb, since they'll matter if a judge looks closely:
+
+**1. Phase 1/Phase 2 discrepancy.** Your directive has "Phase 1 MVP (current submission)" running on Android's native `SpeechRecognizer`, `TextToSpeech`, and Google's **Nearby Connections API** — but Android's default speech engine and Nearby Connections are Google-provided, closed-source, and the speech APIs commonly fall back to cloud processing. The PS explicitly bans "proprietary, closed-source, or commercial voice-activation SDKs" and requires "fully offline working... no internet hosted API based solutions." If what you actually demo at any judged stage is the Phase 1 build, it doesn't meet the PS's stated restrictions, even if the *slide deck* describes the compliant Phase 2 architecture. I'd treat closing that gap as a priority above polishing the deck — a judge who asks "can I see this running" and gets the Phase 1 build is a bigger risk than an imperfect slide. I'll write the deck around the compliant Phase 2 architecture as instructed, but flag this clearly rather than pretend the gap isn't there.
+
+**2. Color conflict in your own directive.** Your "THREE OPERATING MODES" section defines Emergency Alert as **Red UI**, but your "SLIDE STRUCTURE" section says Slide 3's chains should be Orange/Blue/**Green**. I've gone with **Red** throughout, since the mode definition is the more specific source — tell me if you actually meant green and I'll swap it.
+
+Palette used everywhere below: **Navy `#10243E`** (headers/body text), **Amber `#F2A007`** (PTT/relay mode), **Teal `#0E7C7B`** (UVP/secondary), **Red `#C81D25`** (alert mode only) — light tints of these as card backgrounds, never full-saturation fills, never stripes.
+
+---
+
+## Slide 1 — Title Page
+Don't touch the template's built-in SIH hexagon/brain graphic. Add only a plain-text wordmark top-left, no logo graphic: **"AlomVilom"**, same font family as body text, Navy, no box around it.
+
+Bullet fields (fill exactly):
+- Problem Statement ID : **26173**
+- Problem Statement Title : **iTantra – Indian Multilingual TTS & STT Aided Neural Transceiver Radio Access for low bitrate links**
+- Theme : **Smart Automation**
+- PS Category : **Software**
+- Team ID : *[your registered Team ID]*
+- Team Name : **AlomVilom**
+
+No custom icons on this slide.
+
+## Slide 2 — Idea Title / Proposed Solution
+
+**Header:** "VAANISETU" — large, bold, centered, Navy. Tagline directly below, italic, smaller, Teal: *"Speech that reaches, even when the network doesn't."* Top-right corner: small ★ legend "= Innovation" in Amber, next to the template's own SIH logo (unmoved).
+
+**Box 1 — PROBLEM** (light Navy tint, no border stripe):
+- No signal, no safety — distress texts go unread when reading itself is the barrier.
+- Voice can't survive a dying network: a 6-second voice note needs more bandwidth than a flood-hit tower has left.
+- One app, one language leaves out most of a country that speaks in ten-plus tongues.
+Icons beside each bullet: `FaExclamationTriangle` (amber circle), `FaWifi` with a small `FaBan` overlay, `FaLanguage`.
+Below the bullets, instead of stock photos: **one real screenshot of your actual Phase-1 MVP home/channel screen**, captioned small — "Early build, channel view." (This is your one "real screenshot replacing a generic icon" per the anti-AI rule.)
+
+**Box 2 — PROPOSED SOLUTION** (light Amber tint):
+- Text-only radio bridge — speech becomes ~20–60 bytes of text before it ever leaves the phone, not a single sound wave.
+- A ten-language voice engine, running entirely on the device itself.
+- Say something urgent, and the receiving phone won't stay silent — alert mode overrides silent and DND automatically.
+- Hold one button to relay like a radio. Let go, and it's just your phone again.
+Icons: `FaFileAlt` (text-only), `FaMicrochip` (on-device engine), `FaBell` (alert override), `FaExchangeAlt` (mode toggle).
+
+**Box 3 — UVP** (light Teal tint):
+- Zero internet, zero cloud, zero proprietary SDK — every model runs on-device, fully open-source.
+- Built for people who can't read the alert, not just people who can.
+- Tested down to 300–2400 bps — real disaster-radio speed, not Wi-Fi speed.
+- "Discord for disaster zones" — named channels, message history, no jamming between simultaneous speakers.
+Icons: `FaShieldAlt`, `FaAssistiveListeningSystems`, `FaBroadcastTower`, `FaHashtag`.
+
+**Box 4 — ARCHITECTURE** (right side, full-height flowchart):
+`FaUserAlt` "User" → `FaBluetoothB`/`FaWifi` "Pair devices (BT / Wi-Fi Direct)" → gray pill "Session state?" → three branches:
+- **Blue — Normal Phone Mode** (PTT off): `FaPhoneAlt` → "Full-duplex call, hardware AEC" → *Call active*.
+- **Orange — Push-to-Talk Relay Mode**: `FaMicrophoneAlt` → "Speak → STT → compress → transmit" → `FaVolumeUp` "TTS reply, sender named aloud" → *Relay delivered*.
+- **Red ★ — Emergency Alert Mode** (fires anytime, not gated by PTT state — label the arrow "distress phrase / SOS button, any time"): `FaExclamationTriangle` → "Bypass silent/DND, max volume" → *Alert delivered*.
+Side annotation off the Orange branch: `FaMicrochip` — "Optional embedded relay: ESP32 Heltec V3 (LoRa), 1–5 km urban / 10–20 km line-of-sight."
+Bottom badge row (4 small pills): "Open-source only" (`FaShieldAlt`), "Fully offline" (`FaHdd`), "10 languages" (`FaLanguage`), "No cell tower needed" (`FaBroadcastTower` + `FaBan`).
+
+## Slide 3 — Technical Approach
+
+Top flow: 🚀 "Start Here" → gray pill "PTT state?" → three labeled arrows ("Held" / "Released" / "Distress phrase or SOS button — any time").
+
+**Orange chain (Relay):** `FaMicrophoneAlt` Mic capture → `FaWaveSquare` Two-stage VAD gate → `FaMicrochip` Streaming STT (IndicConformer) → `FaCompressAlt` Compress (template-id or text) → `FaBluetoothB` Transmit (BT SPP / Wi-Fi Direct) → `FaVolumeUp` Decode + neural TTS (VITS) → `FaCommentDots` Playback ("Amit says: …") → *Relay delivered*. Small callout under the transmit step: "~23 bytes/sentence at 2400 bps → ≈620 ms end-to-end *(replace with your measured number)*."
+
+**Blue chain (Normal):** `FaPhoneAlt` PTT released → Standard duplex audio path, hardware AEC → *Call active*.
+
+**Red chain ★ (Alert):** `FaExclamationTriangle` Distress phrase/button → `FaBellSlash` Force max volume, bypass DND → `FaBroadcastTower` Broadcast to channel → *Alert delivered*.
+
+**Tech stack row (bottom-left):** `SiKotlin`, `SiPython`, `SiAndroid`, `SiCplusplus`, `SiTensorflow` (or `FaMicrochip` as a stand-in if no ONNX glyph is available), `SiGithub`, `FaBluetoothB`, `FaWifi`. Small text under the row: "ONNX Runtime Mobile + sherpa-onnx (Apache-2.0) for on-device inference" — since that toolchain has no standard logo icon, name it explicitly rather than force an icon onto it.
+
+## Slide 4 — Feasibility and Viability
+
+**Left — FEASIBILITY:** Technical: proven open stack — Kotlin, ONNX Runtime Mobile, AI4Bharat IndicConformer + VITS Rasa-13, MIT/Apache-licensed. Innovation: a text-only relay is a fundamentally lighter transmission model, not just a compressed one. Operational: zero internet, on phones the target users already carry. Economic: no new hardware mandatory — the LoRa/ESP32 path is optional range extension, not a requirement.
+
+**Right — VIABILITY:** Market: disaster-prone states, low-connectivity rural belts, paramilitary/NDRF field units. Policy: sits naturally alongside NDMA's own communication guidelines. Investment: cost scales with app installs, not new hardware. Scalability: an 11th language is a model swap, not a re-architecture.
+
+**Below — two risk/mitigation boxes:**
+- Technical: *Risk* — accuracy drops in loud, chaotic disaster environments. *Mitigation* — hardware AEC/noise suppression plus a distress-phrase template fallback so something always gets through even at low confidence.
+- User: *Risk* — a push-to-talk interface is unfamiliar to a panicked user. *Mitigation* — three one-tap emergency icons (Medical/Fire/Water) needing no typing or speaking, plus haptic confirmation.
+Icons: `FaExclamationCircle` for each Risk line, `FaCheckCircle` for each Mitigation line (avoid the gear/lightbulb clichés entirely on this slide).
+
+## Slide 5 — Impact and Benefits
+
+Three impact lines: Human safety (a working relay can be the difference between a rescue team arriving in time or not) / Inclusion (someone who can't read the script still hears the warning, in their own language) / Strategic (a fully open, offline layer is directly reusable by ISRO/NDRF/defense without any foreign proprietary dependency).
+
+**Comparison table** (verify each cell against a real, checked comparison before presenting — don't assert an unverified competitor claim):
+
+| Metric | Audio-Streaming Approach | VaaniSetu |
+|---|---|---|
+| Bandwidth required | 6,000+ bps (Opus audio) | ~30 bps (text) |
+| Works at 300 bps | ❌ | ✅ |
+| Fully offline | ⚠️ often cloud STT/TTS | ✅ |
+| Open-source only | ⚠️ often proprietary SDK | ✅ |
+| Works for illiterate users | ❌ | ✅ |
+| Non-interruptible alert | ❌ | ✅ |
+| 10 Indian languages | rarely | ✅ |
+
+**Three mode cards** (Blue/Orange/Red), each with For / Process / Target metric / Best for — reusing the exact mode text from Slide 2's flowchart so the deck feels consistent rather than repeating boilerplate.
+
+## Slide 6 — Research and References
+
+Bullets: AI4Bharat's IndicConformer and VITS/IndicF5 research (IIT Madras) · k2-fsa/sherpa-onnx (Apache-2.0) · Silero VAD (MIT) · NDMA communication guidelines.
+
+"Solutions already exist" vs "Ours stands out" two-box comparison, and a Project Resources block (Demo video / GitHub / Architecture doc links).
+
+---
+
+This is the full content spec — say the word and I'll build the actual `.pptx` from your template next (unzip it, drop this content and every flowchart/icon into the real slide XML, render the icons, and QA it visually before handing you the file).

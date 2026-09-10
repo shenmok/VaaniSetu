@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Speaking indicator: pulses between 8dp and 11dp diameter (size pulse, NOT alpha pulse) -->
+<!-- Per Design1.md: "The size pulse is more physical and attention-grabbing" -->
+<set xmlns:android="http://schemas.android.com/apk/res/android"
+    android:repeatMode="reverse"
+    android:repeatCount="infinite">
+    <scale
+        android:fromXScale="1.0"
+        android:toXScale="1.375"
+        android:fromYScale="1.0"
+        android:toYScale="1.375"
+        android:pivotX="50%"
+        android:pivotY="50%"
+        android:duration="600"
+        android:repeatMode="reverse"
+        android:repeatCount="infinite" />
+</set>

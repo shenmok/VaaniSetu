@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">VaaniSetu</string>
+
+    <!-- Onboarding -->
+    <string name="onboarding_welcome">Welcome to VaaniSetu</string>
+    <string name="onboarding_name_hint">Enter your name</string>
+    <string name="onboarding_name_speak">Tap mic to speak your name</string>
+    <string name="onboarding_select_language">Select Language</string>
+    <string name="onboarding_start">Start</string>
+    <string name="onboarding_permissions">Permissions needed for offline communication</string>
+
+    <!-- Main Screen -->
+    <string name="peer_count_format">%d Peers</string>
+    <string name="mode_phone">Phone Mode</string>
+    <string name="mode_ptt">PTT Mode</string>
+    <string name="mode_emergency">EMERGENCY</string>
+    <string name="ptt_button_desc">Push to Talk</string>
+    <string name="channel_global">Global</string>
+    <string name="channel_add_new">+ New</string>
+
+    <!-- Emergency -->
+    <string name="emergency_medical">NEED MEDICAL ASSISTANCE IMMEDIATELY</string>
+    <string name="emergency_fire">FIRE EMERGENCY — NEED EVACUATION</string>
+    <string name="emergency_flood">FLOODING — NEED RESCUE</string>
+
+    <!-- Emergency content descriptions -->
+    <string name="desc_emergency_medical">Need medical assistance immediately</string>
+    <string name="desc_emergency_fire">Fire emergency, need evacuation</string>
+    <string name="desc_emergency_flood">Flooding, need rescue</string>
+
+    <!-- Sender prefix (used by TTS: "Amit says:") -->
+    <string name="sender_says_format">%s says:</string>
+
+    <!-- Settings -->
+    <string name="settings_title">Settings</string>
+    <string name="settings_alert_mode">Alert Mode</string>
+    <string name="settings_alert_max_volume">Max Volume</string>
+    <string name="settings_alert_vibrate">Vibrate Only</string>
+    <string name="settings_alert_muted">Muted</string>
+    <string name="settings_display_name">Display Name</string>
+    <string name="settings_language">Language</string>
+
+    <!-- Channel Management -->
+    <string name="channel_create_title">Create Channel</string>
+    <string name="channel_name_hint">Channel name</string>
+    <string name="channel_join">Join</string>
+    <string name="channel_create">Create</string>
+    <string name="channel_cancel">Cancel</string>
+
+    <!-- Timestamps (24-hour format per Design1.md) -->
+    <string name="timestamp_format">HH:mm</string>
+
+    <!-- Language display names (for the spinner) -->
+    <string name="lang_english">English</string>
+    <string name="lang_hindi">हिन्दी</string>
+    <string name="lang_marathi">मराठी</string>
+</resources>

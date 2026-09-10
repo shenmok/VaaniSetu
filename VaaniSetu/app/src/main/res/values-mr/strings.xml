@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">VaaniSetu</string>
+
+    <!-- Onboarding -->
+    <string name="onboarding_welcome">VaaniSetu मध्ये आपले स्वागत आहे</string>
+    <string name="onboarding_name_hint">तुमचे नाव टाका</string>
+    <string name="onboarding_name_speak">तुमचे नाव बोलण्यासाठी माइक दाबा</string>
+    <string name="onboarding_select_language">भाषा निवडा</string>
+    <string name="onboarding_start">सुरू करा</string>
+    <string name="onboarding_permissions">ऑफलाइन संवादासाठी परवानग्या आवश्यक आहेत</string>
+
+    <!-- Main Screen -->
+    <string name="peer_count_format">%d सहकारी</string>
+    <string name="mode_phone">फोन मोड</string>
+    <string name="mode_ptt">PTT मोड</string>
+    <string name="mode_emergency">आणीबाणी</string>
+    <string name="ptt_button_desc">बोलण्यासाठी दाबा</string>
+    <string name="channel_global">सार्वजनिक</string>
+    <string name="channel_add_new">+ नवीन</string>
+
+    <!-- Emergency -->
+    <string name="emergency_medical">तातडीने वैद्यकीय मदत हवी आहे</string>
+    <string name="emergency_fire">आग लागली — तातडीने निर्वासन करा</string>
+    <string name="emergency_flood">पूर — बचावाची गरज आहे</string>
+
+    <!-- Emergency content descriptions -->
+    <string name="desc_emergency_medical">तातडीने वैद्यकीय मदत हवी</string>
+    <string name="desc_emergency_fire">आगीचा आणीबाणी, निर्वासनाची गरज</string>
+    <string name="desc_emergency_flood">पूर, बचावाची गरज</string>
+
+    <!-- Sender prefix -->
+    <string name="sender_says_format">%s म्हणाले:</string>
+
+    <!-- Settings -->
+    <string name="settings_title">सेटिंग्ज</string>
+    <string name="settings_alert_mode">अलर्ट मोड</string>
+    <string name="settings_alert_max_volume">कमाल आवाज</string>
+    <string name="settings_alert_vibrate">फक्त कंपन</string>
+    <string name="settings_alert_muted">निःशब्द</string>
+    <string name="settings_display_name">प्रदर्शित नाव</string>
+    <string name="settings_language">भाषा</string>
+
+    <!-- Channel Management -->
+    <string name="channel_create_title">चॅनेल तयार करा</string>
+    <string name="channel_name_hint">चॅनेलचे नाव</string>
+    <string name="channel_join">सामील व्हा</string>
+    <string name="channel_create">तयार करा</string>
+    <string name="channel_cancel">रद्द करा</string>
+
+    <!-- Timestamps -->
+    <string name="timestamp_format">HH:mm</string>
+
+    <!-- Language display names -->
+    <string name="lang_english">English</string>
+    <string name="lang_hindi">हिन्दी</string>
+    <string name="lang_marathi">मराठी</string>
+</resources>

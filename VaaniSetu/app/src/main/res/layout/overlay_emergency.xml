@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    Emergency Alert full-screen overlay
+    Design1.md compliance:
+    ✓ Solid Red (#B71C1C) background — NO gradients
+    ✓ 31sp Bold white text
+    ✓ Emergency text letter-spacing: -0.02em (tighter to convey urgency)
+-->
+<FrameLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/emergencyOverlay"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#B71C1C"
+    android:visibility="gone"
+    android:clickable="true"
+    android:focusable="true"
+    android:elevation="100dp">
+
+    <TextView
+        android:id="@+id/emergencyAlertText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:gravity="center"
+        android:text="EMERGENCY ALERT"
+        android:textColor="#FFFFFF"
+        android:textSize="31sp"
+        android:textStyle="bold"
+        android:letterSpacing="-0.02"
+        android:paddingHorizontal="32dp" />
+
+</FrameLayout>

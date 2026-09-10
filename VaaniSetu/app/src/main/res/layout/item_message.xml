@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    Message bubble item layout
+    Design1.md compliance:
+    ✓ Sender name: 17sp Bold, letter-spacing 0.03em
+    ✓ Message text: 17sp Regular, left-aligned
+    ✓ Timestamp: 13sp, 24-hour format (no AM/PM), secondary color
+    ✓ NO elevation, NO drop shadow on bubble
+-->
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:background="@drawable/bg_message_bubble"
+    android:layout_marginStart="12dp"
+    android:layout_marginEnd="12dp"
+    android:layout_marginTop="4dp"
+    android:layout_marginBottom="4dp">
+
+    <!-- Sender name: 0.03em letter-spacing per Design1.md -->
+    <TextView
+        android:id="@+id/senderNameText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="#FFFFFF"
+        android:textSize="17sp"
+        android:textStyle="bold"
+        android:letterSpacing="0.03"
+        tools:text="Amit says:" />
+
+    <!-- Message body: 17sp Regular, left-aligned -->
+    <TextView
+        android:id="@+id/messageText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="2dp"
+        android:textColor="#DDDDDD"
+        android:textSize="17sp"
+        tools:text="Need medical assistance at sector 7" />
+
+    <!-- Timestamp: 13sp, secondary color, 24-hour format -->
+    <TextView
+        android:id="@+id/timestampText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        android:textColor="#888888"
+        android:textSize="13sp"
+        tools:text="14:37" />
+
+</LinearLayout>

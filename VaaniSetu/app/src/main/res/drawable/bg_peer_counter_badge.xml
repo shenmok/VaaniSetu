@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Peer counter badge: intentionally asymmetric corner radii per Design1.md -->
+<!-- 6dp top corners, 3dp bottom corners — signals manual craftsmanship -->
+<shape xmlns:android="http://schemas.android.com/apk/res/android"
+    android:shape="rectangle">
+    <solid android:color="#004D40" />
+    <corners
+        android:topLeftRadius="6dp"
+        android:topRightRadius="6dp"
+        android:bottomLeftRadius="3dp"
+        android:bottomRightRadius="3dp" />
+    <padding
+        android:left="10dp"
+        android:top="4dp"
+        android:right="10dp"
+        android:bottom="4dp" />
+</shape>

@@ -1,0 +1,231 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    VaaniSetu Main Screen Layout
+    Design1.md compliance checklist:
+    ✓ Mode Indicator bar: exactly 3dp tall
+    ✓ Peer counter badge: asymmetric corners (6dp top, 3dp bottom)
+    ✓ Channel tabs: 14dp horizontal / 9dp vertical padding
+    ✓ 7dp spacing between tabs and first message
+    ✓ PTT button: 89dp diameter, offset 11dp left of center
+    ✓ Emergency presets: unequal spacing (19dp Medical→Fire, 13dp Fire→Water)
+    ✓ Message bubbles: NO elevation, NO shadow
+    ✓ Dark theme background (#121212)
+    ✓ NO gradients anywhere
+-->
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#121212"
+    tools:context=".MainActivity">
+
+    <!-- ========== MODE INDICATOR BAR (exactly 3dp tall) ========== -->
+    <View
+        android:id="@+id/modeIndicatorBar"
+        android:layout_width="0dp"
+        android:layout_height="3dp"
+        android:background="#1A237E"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <!-- ========== TOP BAR: Peer Counter (left) + Language Dropdown (right) ========== -->
+    <TextView
+        android:id="@+id/peerCounterText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="12dp"
+        android:layout_marginTop="10dp"
+        android:background="@drawable/bg_peer_counter_badge"
+        android:text="@string/peer_count_format"
+        android:textColor="#FFFFFF"
+        android:textSize="13sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/modeIndicatorBar" />
+
+    <!-- Speaking indicator dot: size-pulses 8dp→11dp, NOT alpha fade -->
+    <View
+        android:id="@+id/speakingIndicator"
+        android:layout_width="8dp"
+        android:layout_height="8dp"
+        android:layout_marginStart="8dp"
+        android:background="@drawable/bg_speaking_indicator"
+        android:visibility="gone"
+        app:layout_constraintStart_toEndOf="@id/peerCounterText"
+        app:layout_constraintTop_toTopOf="@id/peerCounterText"
+        app:layout_constraintBottom_toBottomOf="@id/peerCounterText" />
+
+    <Spinner
+        android:id="@+id/languageDropdown"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="12dp"
+        android:layout_marginTop="6dp"
+        android:backgroundTint="#FFFFFF"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/modeIndicatorBar" />
+
+    <!-- ========== CHANNEL TABS ========== -->
+    <!-- Unequal padding: 14dp horizontal, 9dp vertical per Design1.md -->
+    <HorizontalScrollView
+        android:id="@+id/channelTabsContainer"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:scrollbars="none"
+        app:layout_constraintTop_toBottomOf="@id/peerCounterText"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
+
+        <LinearLayout
+            android:id="@+id/channelTabsLayout"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:paddingStart="12dp"
+            android:paddingEnd="12dp">
+
+            <!-- Default Global channel tab -->
+            <TextView
+                android:id="@+id/tabGlobal"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingHorizontal="14dp"
+                android:paddingVertical="9dp"
+                android:text="@string/channel_global"
+                android:textColor="#FFFFFF"
+                android:textSize="14sp"
+                android:textStyle="bold"
+                android:background="?attr/selectableItemBackground" />
+
+            <!-- Add Channel button: borderless ripple, no outline per Design1.md -->
+            <TextView
+                android:id="@+id/btnAddChannel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingHorizontal="14dp"
+                android:paddingVertical="9dp"
+                android:text="@string/channel_add_new"
+                android:textColor="#888888"
+                android:textSize="14sp"
+                android:background="?attr/selectableItemBackgroundBorderless" />
+
+        </LinearLayout>
+    </HorizontalScrollView>
+
+    <!-- ========== MESSAGE LIST ========== -->
+    <!-- 7dp top margin (odd number per Design1.md to break 8dp Material grid) -->
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/messageRecyclerView"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginTop="7dp"
+        android:clipToPadding="false"
+        android:paddingBottom="8dp"
+        app:layout_constraintTop_toBottomOf="@id/channelTabsContainer"
+        app:layout_constraintBottom_toTopOf="@id/emergencyPresetsContainer"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <!-- ========== EMERGENCY PRESET BUTTONS ========== -->
+    <!-- Unequal spacing: 19dp Medical→Fire, 13dp Fire→Water per Design1.md -->
+    <LinearLayout
+        android:id="@+id/emergencyPresetsContainer"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="12dp"
+        android:orientation="horizontal"
+        android:gravity="center"
+        app:layout_constraintBottom_toTopOf="@id/pttButtonContainer"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
+
+        <!-- Medical Cross -->
+        <ImageButton
+            android:id="@+id/btnEmergencyMedical"
+            android:layout_width="56dp"
+            android:layout_height="56dp"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:src="@android:drawable/ic_menu_call"
+            android:contentDescription="@string/desc_emergency_medical"
+            android:scaleType="centerInside"
+            app:tint="#B71C1C" />
+
+        <!-- 19dp gap between Medical and Fire -->
+        <View
+            android:layout_width="19dp"
+            android:layout_height="1dp" />
+
+        <!-- Fire -->
+        <ImageButton
+            android:id="@+id/btnEmergencyFire"
+            android:layout_width="56dp"
+            android:layout_height="56dp"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:src="@android:drawable/ic_dialog_alert"
+            android:contentDescription="@string/desc_emergency_fire"
+            android:scaleType="centerInside"
+            app:tint="#FF6F00" />
+
+        <!-- 13dp gap between Fire and Water (intentionally different from 19dp above) -->
+        <View
+            android:layout_width="13dp"
+            android:layout_height="1dp" />
+
+        <!-- Water/Flood -->
+        <ImageButton
+            android:id="@+id/btnEmergencyWater"
+            android:layout_width="56dp"
+            android:layout_height="56dp"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:src="@android:drawable/ic_menu_compass"
+            android:contentDescription="@string/desc_emergency_flood"
+            android:scaleType="centerInside"
+            app:tint="#1565C0" />
+
+    </LinearLayout>
+
+    <!-- ========== PTT BUTTON CONTAINER ========== -->
+    <!-- Offset 11dp to the LEFT of center per Design1.md -->
+    <!-- "mimics real radio hardware ergonomics where the push-to-talk button
+         sits toward the dominant thumb" -->
+    <FrameLayout
+        android:id="@+id/pttButtonContainer"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="24dp"
+        android:layout_marginEnd="11dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5">
+
+        <ImageButton
+            android:id="@+id/pttButton"
+            android:layout_width="89dp"
+            android:layout_height="89dp"
+            android:background="@drawable/bg_ptt_button_blue"
+            android:src="@android:drawable/ic_btn_speak_now"
+            android:scaleType="centerInside"
+            android:contentDescription="@string/ptt_button_desc"
+            app:tint="#FFFFFF" />
+
+    </FrameLayout>
+
+    <!-- ========== MODE TOGGLE (Phone / PTT) ========== -->
+    <TextView
+        android:id="@+id/modeToggleLabel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="4dp"
+        android:text="@string/mode_phone"
+        android:textColor="#888888"
+        android:textSize="12sp"
+        app:layout_constraintBottom_toTopOf="@id/pttButtonContainer"
+        app:layout_constraintStart_toStartOf="@id/pttButtonContainer"
+        app:layout_constraintEnd_toEndOf="@id/pttButtonContainer" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
