@@ -101,17 +101,37 @@ Important screenshots and hardware/prototype photos (LoRa integration) can be fo
 See [screenshots/](screenshots/)
 
 ## 11. Setup and Run
-To build and run the VaaniSetu Android application, follow these concise steps:
 
-```bash
-git clone https://github.com/shenmok/VaaniSetu.git
-cd VaaniSetu/VaaniSetu
-```
+### Prerequisites
+- **Android Studio** (Hedgehog / Koala or newer recommended)
+- **JDK 17** (bundled with modern Android Studio)
+- **Device / Emulator:** Android 7.0 (API Level 24) or higher with Bluetooth and Wi-Fi enabled
 
-1. Open the inner `VaaniSetu/` project directory in **Android Studio** (Koala or newer recommended).
-2. Allow Gradle to automatically sync the project dependencies.
-3. Connect an Android device (API 24+) or start an emulator.
-4. Click **Run > Run 'app'** (or use Shift + F10) to build and launch the application.
+### Step-by-Step Instructions
+
+1. **Clone the Repository:**
+   ```bash
+   git clone https://github.com/shenmok/VaaniSetu.git
+   cd VaaniSetu
+   ```
+
+2. **Open in Android Studio:**
+   - Launch Android Studio and click **Open**.
+   - Select the **inner `VaaniSetu/`** folder (the directory containing `settings.gradle` and `build.gradle.kts`).
+   - Allow Gradle to automatically download dependencies and complete indexing.
+
+3. **Build and Run:**
+   - Connect a physical Android device (with Developer Options & USB Debugging enabled) or launch an Android Virtual Device (AVD).
+   - Click **Run > Run 'app'** (or press `Shift + F10`).
+   - *Alternatively*, build the debug APK directly via command line:
+     ```bash
+     cd VaaniSetu
+     ./gradlew assembleDebug
+     ```
+
+### 🧪 Single-Device / Emulator Testing Note
+> **Testing without a second physical phone?**  
+> Because peer-to-peer radio mesh requires two physical devices, use the green **"Debug: Simulate Peer"** button on the home screen. This immediately creates a virtual peer named **"Alom"**, connects, streams incoming simulated voice messages, and triggers an emergency distress alert to test the full pipeline on a single device or emulator.
 
 ## 12. APK Release
 > **Tagline:** *In Development*
