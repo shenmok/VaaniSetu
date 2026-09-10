@@ -76,6 +76,7 @@ SIH-VaaniSetu/
 │   ├── PRESENTATION.md
 │   └── DEMO.md
 ├── screenshots/             # App screenshots and LoRa prototype photos
+├── Apk/                     # Standalone APK releases (In Development)
 ├── requirements.txt         # Project software and hardware dependencies
 ├── .gitignore               
 └── README.md                # Project overview (this file)
@@ -112,9 +113,12 @@ cd VaaniSetu/VaaniSetu
 3. Connect an Android device (API 24+) or start an emulator.
 4. Click **Run > Run 'app'** (or use Shift + F10) to build and launch the application.
 
-*(Note: We will add a pre-built APK section to this file later for direct installation).*
+## 12. APK Release
+> **Tagline:** *In Development*
 
-## 12. Future Scope
+*Future APK releases will be made available in the `/Apk` directory for direct download and standalone installation without requiring Android Studio.*
+
+## 13. Future Scope
 Moving into Phase 2 and production, VaaniSetu will integrate:
 - **Long-Range LoRa Hardware:** Extending the mesh range up to 10-20km using sub-GHz frequencies via ESP32 modules.
 - **Edge Quantized AI:** Embedding AI4Bharat's IndicConformer (STT) and VITS Rasa (TTS) fully on-device via `sherpa-onnx`.
