@@ -1,4 +1,4 @@
-﻿package com.example.vaanisetu
+package com.example.vaanisetu
 
 import android.Manifest
 import android.content.Intent
@@ -42,13 +42,17 @@ class OnboardingActivity : AppCompatActivity() {
         }
     }
 
+    private var isEditMode = false
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         prefsManager = SharedPreferencesManager(this)
 
-        // Route to MainActivity if already onboarded
-        if (prefsManager.isOnboardingCompleted()) {
-            startActivity(Intent(this, MainActivity::class.java))
+        isEditMode = intent.getBooleanExtra("EDIT_MODE", false)
+
+        // Route to Home if already onboarded (unless in edit mode)
+        if (prefsManager.isOnboardingCompleted() && !isEditMode) {
+            startActivity(Intent(this, HomeActivity::class.java))
             finish()
             return
         }
@@ -62,6 +66,11 @@ class OnboardingActivity : AppCompatActivity() {
 
         setupSpinner()
         requestCorePermissions()
+
+        // Pre-fill in edit mode
+        if (isEditMode) {
+            nameInput.setText(prefsManager.getUserName())
+        }
 
         startButton.setOnClickListener {
             val name = nameInput.text.toString().trim()
@@ -77,7 +86,7 @@ class OnboardingActivity : AppCompatActivity() {
             prefsManager.saveLanguage(selectedLangCode)
             prefsManager.setOnboardingCompleted()
 
-            startActivity(Intent(this, MainActivity::class.java))
+            startActivity(Intent(this, HomeActivity::class.java))
             finish()
         }
 

@@ -32,6 +32,9 @@ class NearbyConnectionsManager(
 
     private val connectionsClient: ConnectionsClient = clientForTesting ?: Nearby.getConnectionsClient(context)
     val connectedEndpoints = mutableSetOf<String>()
+    private val peerNames = mutableMapOf<String, String>()
+
+    fun getPeerName(endpointId: String): String? = peerNames[endpointId]
 
     private val _peerCount = MutableStateFlow(0)
     val peerCount: StateFlow<Int> = _peerCount.asStateFlow()
@@ -55,6 +58,8 @@ class NearbyConnectionsManager(
 
     private val connectionLifecycleCallback = object : ConnectionLifecycleCallback() {
         override fun onConnectionInitiated(endpointId: String, connectionInfo: ConnectionInfo) {
+            // Store peer's display name from handshake
+            peerNames[endpointId] = connectionInfo.endpointName
             // Auto-accept connection in P2P Cluster
             connectionsClient.acceptConnection(endpointId, payloadCallback)
         }

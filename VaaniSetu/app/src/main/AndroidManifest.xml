@@ -22,8 +22,10 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.VaaniSetu">
+
+        <!-- HOME is the launcher — routes to Onboarding if needed -->
         <activity
-            android:name=".OnboardingActivity"
+            android:name=".HomeActivity"
             android:exported="true"
             android:windowSoftInputMode="adjustResize"
             android:theme="@style/Theme.VaaniSetu">
@@ -33,12 +35,27 @@
             </intent-filter>
         </activity>
 
+        <!-- Onboarding — first time setup or profile edit -->
+        <activity
+            android:name=".OnboardingActivity"
+            android:exported="false"
+            android:windowSoftInputMode="adjustResize"
+            android:theme="@style/Theme.VaaniSetu" />
+
+        <!-- PTT Channel Mode -->
         <activity
             android:name=".MainActivity"
-            android:exported="true"
+            android:exported="false"
             android:windowSoftInputMode="adjustResize"
-            android:theme="@style/Theme.VaaniSetu">
-        </activity>
+            android:theme="@style/Theme.VaaniSetu" />
+
+        <!-- Full Duplex Call -->
+        <activity
+            android:name=".DuplexCallActivity"
+            android:exported="false"
+            android:windowSoftInputMode="adjustResize"
+            android:theme="@style/Theme.VaaniSetu" />
+
     </application>
 
 </manifest>
