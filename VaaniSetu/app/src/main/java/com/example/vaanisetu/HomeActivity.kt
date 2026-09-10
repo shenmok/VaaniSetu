@@ -122,6 +122,8 @@ class HomeActivity : AppCompatActivity() {
         try { NearbyConnectionsManager.stopAll() } catch (_: Exception) {}
     }
 
+    private lateinit var btnSimulatePeer: Button
+
     // ── Views ────────────────────────────────────────────────────────
     private fun bindViews() {
         peerRecyclerView = findViewById(R.id.peerRecyclerView)
@@ -135,6 +137,7 @@ class HomeActivity : AppCompatActivity() {
         btnProfile = findViewById(R.id.btnProfile)
         btnPttMode = findViewById(R.id.btnPttMode)
         btnAlert = findViewById(R.id.btnAlert)
+        btnSimulatePeer = findViewById(R.id.btnSimulatePeer)
     }
 
     // ── Language Dropdown ─────────────────────────────────────────────
@@ -230,6 +233,10 @@ class HomeActivity : AppCompatActivity() {
             val intent = Intent(this, OnboardingActivity::class.java)
             intent.putExtra("EDIT_MODE", true)
             startActivity(intent)
+        }
+
+        btnSimulatePeer.setOnClickListener {
+            NearbyConnectionsManager.simulateFakePeerAndMessage()
         }
 
         // PTT Channel Mode → existing walkie-talkie screen

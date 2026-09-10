@@ -120,4 +120,48 @@ object NearbyConnectionsManager {
         val payload = Payload.fromBytes(rawString.toByteArray(StandardCharsets.UTF_8))
         connectionsClient?.sendPayload(connectedEndpoints.toList(), payload)
     }
+
+    // DEBUG: Simulate a peer connection and incoming messages
+    fun simulateFakePeerAndMessage() {
+        val fakeEndpointId = "sim_alom_${System.currentTimeMillis()}"
+        connectedEndpoints.add(fakeEndpointId)
+        peerNames[fakeEndpointId] = "Alom"
+        _peerCount.value = connectedEndpoints.size
+        
+        kotlinx.coroutines.GlobalScope.launch(kotlinx.coroutines.Dispatchers.Default) {
+            // "says ... after 5 seconds"
+            kotlinx.coroutines.delay(5000)
+            _incomingPayloads.emit(MessagePayload(
+                sender = "Alom",
+                channel = "Global",
+                langCode = "hi-IN",
+                urgencyFlag = 0,
+                text = "lift me aag lagi he"
+            ))
+            
+            // "<pause of 2 second> 2nd floor pe hun me"
+            kotlinx.coroutines.delay(2000)
+            _incomingPayloads.emit(MessagePayload(
+                sender = "Alom",
+                channel = "Global",
+                langCode = "hi-IN",
+                urgencyFlag = 0,
+                text = "2nd floor pe hun me"
+            ))
+            
+            // "after 5 seconds, bachao then disconnects"
+            kotlinx.coroutines.delay(5000)
+            _incomingPayloads.emit(MessagePayload(
+                sender = "Alom",
+                channel = "Global",
+                langCode = "hi-IN",
+                urgencyFlag = 1,
+                text = "bachao"
+            ))
+            
+            kotlinx.coroutines.delay(1000)
+            connectedEndpoints.remove(fakeEndpointId)
+            _peerCount.value = connectedEndpoints.size
+        }
+    }
 }
