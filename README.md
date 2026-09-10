@@ -4,7 +4,7 @@
 
 ## 1. Project Information
 - **Project Title:** VaaniSetu (वाणी सेतु)
-- **Problem Statement ID:**26173
+- **Problem Statement ID:** 26173
 - **PS Title:** iTantra – Indian Multilingual TTS & STT Aided Neural Transceiver Radio Access for low bitrate links
 - **Category:** Software 
 - **Theme:** Smart Automation / Disaster Management
