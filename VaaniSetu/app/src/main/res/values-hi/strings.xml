@@ -1,78 +1,53 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">VaaniSetu</string>
-
-    <!-- Onboarding -->
-    <string name="onboarding_welcome">VaaniSetu में आपका स्वागत है</string>
+    <string name="app_name">वाणी सेतु</string>
+    <string name="onboarding_welcome">वाणी सेतु में आपका स्वागत है</string>
     <string name="onboarding_name_hint">अपना नाम दर्ज करें</string>
-    <string name="onboarding_name_speak">अपना नाम बोलने के लिए माइक दबाएँ</string>
+    <string name="onboarding_name_speak">नाम बोलने के लिए माइक दबाएं</string>
     <string name="onboarding_select_language">भाषा चुनें</string>
     <string name="onboarding_start">शुरू करें</string>
-    <string name="onboarding_permissions">ऑफ़लाइन संचार के लिए अनुमतियाँ आवश्यक हैं</string>
-    <string name="onboarding_subtitle">कृपया अपनी प्रोफ़ाइल सेटअप करें</string>
+    <string name="onboarding_permissions">ऑफ़लाइन संचार के लिए अनुमतियाँ</string>
+    <string name="onboarding_subtitle">कृपया अपना प्रोफाइल सेट करें</string>
 
     <!-- Home Screen -->
-    <string name="connected_peers">जुड़े हुए साथी</string>
-    <string name="no_peers_found">पास के उपकरण खोज रहे हैं…</string>
-    <string name="ptt_channel_mode">🎙️  PTT चैनल मोड</string>
-    <string name="alert_button">🚨  अलर्ट भेजें</string>
-    <string name="profile_settings">प्रोफ़ाइल सेटिंग्स</string>
-    <string name="peer_count_format">%d साथी</string>
+    <string name="connected_peers">जुड़े हुए उपकरण</string>
+    <string name="no_peers_found">आसपास के उपकरण खोजे जा रहे हैं…</string>
+    <string name="ptt_channel_mode">वॉकी-टॉकी</string>
+    <string name="alert_button">अलर्ट भेजें</string>
+    <string name="profile_settings">प्रोफाइल सेटिंग्स</string>
+    <string name="peer_count_format">%d उपकरण</string>
 
     <!-- Mode Labels -->
     <string name="mode_phone">फ़ोन मोड</string>
-    <string name="mode_ptt">PTT मोड</string>
+    <string name="mode_ptt">वॉकी-टॉकी मोड</string>
     <string name="mode_emergency">आपातकाल</string>
-    <string name="ptt_button_desc">बात करने के लिए दबाएँ</string>
+    <string name="ptt_button_desc">बोलने के लिए दबाएं</string>
+    <string name="hold_to_speak">बोलने के लिए दबाए रखें</string>
+    <string name="leave_channel">छोड़ें</string>
 
     <!-- Channels -->
-    <string name="channel_global">सार्वजनिक</string>
+    <string name="channel_global">ग्लोबल</string>
     <string name="channel_add_new">+ नया</string>
-    <string name="channel_create_title">चैनल बनाएँ</string>
+    <string name="channel_create_title">चैनल बनाएं</string>
     <string name="channel_name_hint">चैनल का नाम</string>
     <string name="channel_join">जुड़ें</string>
-    <string name="channel_create">बनाएँ</string>
+    <string name="channel_create">बनाएं</string>
     <string name="channel_cancel">रद्द करें</string>
 
     <!-- Emergency -->
     <string name="emergency_alert_title">⚠️ आपातकालीन अलर्ट</string>
     <string name="emergency_alert_default">आपातकाल — तुरंत मदद चाहिए</string>
-    <string name="emergency_medical">तुरंत चिकित्सा सहायता चाहिए</string>
-    <string name="emergency_fire">आग लगी है — तुरंत निकासी करें</string>
-    <string name="emergency_flood">बाढ़ — बचाव की ज़रूरत है</string>
-    <string name="desc_emergency_medical">तुरंत चिकित्सा सहायता चाहिए</string>
-    <string name="desc_emergency_fire">आग का आपातकाल, निकासी की ज़रूरत</string>
-    <string name="desc_emergency_flood">बाढ़, बचाव की ज़रूरत</string>
-    <string name="tap_to_dismiss">खारिज करने के लिए टैप करें</string>
+    <string name="tap_to_dismiss">हटाने के लिए टैप करें</string>
 
     <!-- Duplex Call -->
-    <string name="call_connected">जुड़ा हुआ</string>
-    <string name="calling_format">कॉल कर रहे हैं: %s</string>
-    <string name="listening">सुन रहे हैं…</string>
-    <string name="end_call">कॉल समाप्त</string>
+    <string name="call_connected">जुड़ गया</string>
+    <string name="calling_format">कॉलिंग: %s</string>
+    <string name="listening">सुन रहा है…</string>
+    <string name="end_call">कॉल समाप्त करें</string>
     <string name="you_label">आप</string>
 
     <!-- TTS Prefix -->
-    <string name="sender_says_format">%s बोले:</string>
-
-    <!-- Settings -->
-    <string name="settings_title">सेटिंग्स</string>
-    <string name="settings_alert_mode">अलर्ट मोड</string>
-    <string name="settings_alert_max_volume">अधिकतम आवाज़</string>
-    <string name="settings_alert_vibrate">केवल कम्पन</string>
-    <string name="settings_alert_muted">मौन</string>
-    <string name="settings_display_name">प्रदर्शित नाम</string>
-    <string name="settings_language">भाषा</string>
-
-    <!-- Timestamps -->
-    <string name="timestamp_format">HH:mm</string>
-
-    <!-- Language display names -->
-    <string name="lang_english">English</string>
-    <string name="lang_hindi">हिन्दी</string>
-    <string name="lang_marathi">मराठी</string>
-
-    <!-- Permissions -->
-    <string name="permissions_required">वॉकी-टॉकी के लिए अनुमतियाँ आवश्यक हैं।</string>
-    <string name="grant_permissions">अनुमतियाँ दें</string>
+    <string name="sender_says_format">%s कहते हैं:</string>
+    <string name="permissions_required">वॉकी-टॉकी के लिए अनुमति आवश्यक है।</string>
+    <string name="grant_permissions">अनुमति दें</string>
 </resources>

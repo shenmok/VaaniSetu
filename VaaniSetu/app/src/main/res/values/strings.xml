@@ -14,16 +14,18 @@
     <!-- Home Screen -->
     <string name="connected_peers">Connected Peers</string>
     <string name="no_peers_found">Searching for nearby devices…</string>
-    <string name="ptt_channel_mode">PTT Channel Mode</string>
+    <string name="ptt_channel_mode">Walkie-Talkie</string>
     <string name="alert_button">SEND ALERT</string>
     <string name="profile_settings">Profile Settings</string>
     <string name="peer_count_format">%d Peers</string>
 
     <!-- Mode Labels -->
     <string name="mode_phone">Phone Mode</string>
-    <string name="mode_ptt">PTT Mode</string>
+    <string name="mode_ptt">Walkie-Talkie Mode</string>
     <string name="mode_emergency">EMERGENCY</string>
     <string name="ptt_button_desc">Push to Talk</string>
+    <string name="hold_to_speak">Hold to Speak</string>
+    <string name="leave_channel">Leave</string>
 
     <!-- Channels -->
     <string name="channel_global">Global</string>

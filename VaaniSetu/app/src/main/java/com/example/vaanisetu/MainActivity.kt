@@ -35,11 +35,11 @@ class MainActivity : AppCompatActivity() {
 
     // ── UI references ───────────────────────────────────────────────
     private lateinit var modeIndicatorBar: View
-    private lateinit var btnBack: ImageButton
+    private lateinit var btnBack: TextView
     private lateinit var speakingIndicator: View
     private lateinit var languageDropdown: Spinner
     private lateinit var messageRecyclerView: RecyclerView
-    private lateinit var pttButton: ImageButton
+    private lateinit var pttButton: com.google.android.material.button.MaterialButton
     private lateinit var modeToggleLabel: TextView
     private lateinit var emergencyOverlayContainer: FrameLayout
 
@@ -222,7 +222,7 @@ class MainActivity : AppCompatActivity() {
         )
         
         val adapter = ArrayAdapter(this, R.layout.item_spinner, languages)
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+        adapter.setDropDownViewResource(R.layout.item_spinner_dropdown)
         languageDropdown.adapter = adapter
         languageDropdown.setPopupBackgroundResource(android.R.color.background_dark)
 

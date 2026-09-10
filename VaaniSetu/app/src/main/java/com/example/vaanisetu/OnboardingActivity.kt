@@ -109,7 +109,7 @@ class OnboardingActivity : AppCompatActivity() {
 
     private fun setupSpinner() {
         val adapter = ArrayAdapter(this, R.layout.item_spinner, languageDisplayNames)
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+        adapter.setDropDownViewResource(R.layout.item_spinner_dropdown)
         languageSpinner.adapter = adapter
         languageSpinner.setPopupBackgroundResource(android.R.color.background_dark)
 

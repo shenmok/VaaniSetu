@@ -16,7 +16,13 @@ import kotlinx.coroutines.launch
 
 enum class PttState { IDLE, LISTENING }
 
-data class IncomingMessage(val sender: String, val langCode: String, val urgencyFlag: Int, val text: String)
+data class IncomingMessage(
+    val sender: String, 
+    val langCode: String, 
+    val urgencyFlag: Int, 
+    val text: String,
+    val timestamp: Long = System.currentTimeMillis()
+)
 
 class WalkieTalkieViewModel(
     private val speechManager: SpeechManager?,
@@ -65,7 +71,15 @@ class WalkieTalkieViewModel(
 
     fun switchChannel(newChannel: String) {
         _currentChannel.value = newChannel
-        _channelMessages.value = emptyList() // clear history on switch for MVP
+        
+        // Load history from DB
+        viewModelScope.launch(kotlinx.coroutines.Dispatchers.IO) {
+            val history = messageDao?.getMessagesByChannel(newChannel) ?: emptyList()
+            val mapped = history.map { 
+                IncomingMessage(it.sender, it.langCode, it.urgencyFlag, it.content, it.timestamp) 
+            }
+            _channelMessages.value = mapped
+        }
     }
 
     fun processNetworkPayload(payload: com.example.vaanisetu.network.MessagePayload) {

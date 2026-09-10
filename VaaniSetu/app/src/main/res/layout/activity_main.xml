@@ -33,16 +33,18 @@
         app:layout_constraintEnd_toEndOf="parent" />
 
     <!-- ========== TOP BAR: Back Button (left) + Language Dropdown (right) ========== -->
-    <ImageButton
+    <TextView
         android:id="@+id/btnBack"
-        android:layout_width="44dp"
+        android:layout_width="wrap_content"
         android:layout_height="44dp"
-        android:layout_marginStart="8dp"
+        android:layout_marginStart="16dp"
         android:layout_marginTop="6dp"
+        android:gravity="center_vertical"
         android:background="?attr/selectableItemBackgroundBorderless"
-        android:src="@android:drawable/ic_menu_revert"
-        android:contentDescription="Back to Home"
-        app:tint="#FFFFFF"
+        android:text="@string/leave_channel"
+        android:textColor="#FF5252"
+        android:textSize="18sp"
+        android:textStyle="bold"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/modeIndicatorBar" />
 
@@ -118,7 +120,6 @@
     </HorizontalScrollView>
 
     <!-- ========== MESSAGE LIST ========== -->
-    <!-- 7dp top margin (odd number per Design1.md to break 8dp Material grid) -->
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/messageRecyclerView"
         android:layout_width="0dp"
@@ -127,65 +128,73 @@
         android:clipToPadding="false"
         android:paddingBottom="8dp"
         app:layout_constraintTop_toBottomOf="@id/channelTabsContainer"
-        app:layout_constraintBottom_toTopOf="@id/pttButtonContainer"
+        app:layout_constraintBottom_toTopOf="@id/liveSpeechContainer"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
 
+    <!-- ========== LIVE STT PREVIEW CONTAINER (Immune area) ========== -->
+    <FrameLayout
+        android:id="@+id/liveSpeechContainer"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:minHeight="48dp"
+        android:layout_marginBottom="8dp"
+        app:layout_constraintBottom_toTopOf="@id/pttButtonContainer"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
+
+        <TextView
+            android:id="@+id/liveSpeechPreview"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginHorizontal="16dp"
+            android:textAlignment="center"
+            android:textColor="#FFFFFF"
+            android:textSize="20sp"
+            android:textStyle="italic"
+            android:visibility="gone" />
+    </FrameLayout>
+
     <!-- ========== PTT BUTTON CONTAINER ========== -->
-    <!-- Offset 11dp to the LEFT of center per Design1.md -->
-    <!-- "mimics real radio hardware ergonomics where the push-to-talk button
-         sits toward the dominant thumb" -->
     <FrameLayout
         android:id="@+id/pttButtonContainer"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="24dp"
-        android:layout_marginEnd="11dp"
-        app:layout_constraintBottom_toBottomOf="parent"
+        android:layout_marginBottom="12dp"
+        app:layout_constraintBottom_toTopOf="@id/modeToggleLabel"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5">
 
-        <ImageButton
+        <com.google.android.material.button.MaterialButton
             android:id="@+id/pttButton"
-            android:layout_width="89dp"
+            android:layout_width="wrap_content"
             android:layout_height="89dp"
-            android:background="@drawable/bg_ptt_button_blue"
-            android:src="@android:drawable/ic_btn_speak_now"
-            android:scaleType="centerInside"
-            android:contentDescription="@string/ptt_button_desc"
-            app:tint="#FFFFFF" />
+            android:text="@string/hold_to_speak"
+            android:textColor="#FFFFFF"
+            android:textSize="18sp"
+            app:icon="@android:drawable/ic_btn_speak_now"
+            app:iconTint="#FFFFFF"
+            app:iconSize="32dp"
+            app:cornerRadius="44dp"
+            app:backgroundTint="#FF6F00"
+            android:paddingHorizontal="32dp"
+            android:contentDescription="@string/ptt_button_desc" />
 
     </FrameLayout>
 
-    <!-- ========== LIVE STT PREVIEW ========== -->
-    <TextView
-        android:id="@+id/liveSpeechPreview"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="12dp"
-        android:layout_marginStart="16dp"
-        android:layout_marginEnd="16dp"
-        android:textAlignment="center"
-        android:textColor="#FFFFFF"
-        android:textSize="20sp"
-        android:textStyle="italic"
-        android:visibility="gone"
-        app:layout_constraintBottom_toTopOf="@id/modeToggleLabel"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
-
-    <!-- ========== MODE TOGGLE (Phone / PTT) ========== -->
+    <!-- ========== MODE TOGGLE (Walkie-Talkie Label) ========== -->
     <TextView
         android:id="@+id/modeToggleLabel"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="4dp"
-        android:text="@string/mode_phone"
+        android:layout_marginBottom="16dp"
+        android:text="@string/mode_ptt"
         android:textColor="#888888"
-        android:textSize="12sp"
-        app:layout_constraintBottom_toTopOf="@id/pttButtonContainer"
-        app:layout_constraintStart_toStartOf="@id/pttButtonContainer"
-        app:layout_constraintEnd_toEndOf="@id/pttButtonContainer" />
+        android:textSize="14sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

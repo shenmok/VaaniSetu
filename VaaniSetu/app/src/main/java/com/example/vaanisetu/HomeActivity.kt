@@ -158,7 +158,7 @@ class HomeActivity : AppCompatActivity() {
         )
         
         val adapter = ArrayAdapter(this, R.layout.item_spinner, languages)
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+        adapter.setDropDownViewResource(R.layout.item_spinner_dropdown)
         languageDropdown.adapter = adapter
         languageDropdown.setPopupBackgroundResource(android.R.color.background_dark)
 

@@ -38,8 +38,9 @@ class MessageAdapter : RecyclerView.Adapter<MessageAdapter.MessageViewHolder>() 
         fun bind(message: IncomingMessage) {
             senderText.text = message.sender
             msgText.text = message.text
-            // Placeholder for time formatting in MVP
-            timeText.text = "Now"
+            
+            val sdf = java.text.SimpleDateFormat("HH:mm", java.util.Locale.getDefault())
+            timeText.text = sdf.format(java.util.Date(message.timestamp))
         }
     }
 }
