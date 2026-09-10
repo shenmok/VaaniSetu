@@ -1,0 +1,9 @@
+Android SDK (API 24+)
+Kotlin
+sherpa-onnx
+AI4Bharat IndicConformer (INT8 ONNX)
+AI4Bharat VITS Rasa 13 (INT8 ONNX)
+MiniLM/LaBSE (INT8 ONNX)
+libbrotli
+JavaReedSolomon
+ESP32 Heltec V3 / LilyGO T-Beam (LoRa hardware integration)
