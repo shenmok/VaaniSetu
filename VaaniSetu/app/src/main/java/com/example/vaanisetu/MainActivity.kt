@@ -110,15 +110,23 @@ class MainActivity : AppCompatActivity() {
         // Start strictly in PTT Mode (Orange)
         applyMode(AppMode.PTT)
         
-        // Restore active channels (activity within last 5 minutes)
+        // Restore active channels and cleanup expired ones
         lifecycleScope.launch(kotlinx.coroutines.Dispatchers.IO) {
             val fiveMinsAgo = System.currentTimeMillis() - (5 * 60 * 1000)
+            
+            // 1. Delete history for channels that haven't been active in 5 mins
+            db.messageDao().deleteInactiveChannels(fiveMinsAgo)
+            
+            // 2. Fetch remaining active channels
             val activeChannels = db.messageDao().getActiveChannels(fiveMinsAgo)
             
             kotlinx.coroutines.withContext(kotlinx.coroutines.Dispatchers.Main) {
                 for (channel in activeChannels) {
                     addChannelTab(channel)
                 }
+                // Explicitly trigger Global channel fetch to ensure UI populates immediately
+                viewModel.switchChannel("Global")
+                updateChannelTabs("Global")
             }
         }
     }

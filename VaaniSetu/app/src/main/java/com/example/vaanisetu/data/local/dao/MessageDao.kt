@@ -22,4 +22,7 @@ interface MessageDao {
 
     @Query("SELECT channelId FROM messages WHERE channelId != 'Global' GROUP BY channelId HAVING MAX(timestamp) > :timeThreshold")
     fun getActiveChannels(timeThreshold: Long): List<String>
+
+    @Query("DELETE FROM messages WHERE channelId != 'Global' AND channelId IN (SELECT channelId FROM messages WHERE channelId != 'Global' GROUP BY channelId HAVING MAX(timestamp) <= :timeThreshold)")
+    fun deleteInactiveChannels(timeThreshold: Long)
 }
