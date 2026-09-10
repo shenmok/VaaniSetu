@@ -109,6 +109,18 @@ class MainActivity : AppCompatActivity() {
 
         // Start strictly in PTT Mode (Orange)
         applyMode(AppMode.PTT)
+        
+        // Restore active channels (activity within last 5 minutes)
+        lifecycleScope.launch(kotlinx.coroutines.Dispatchers.IO) {
+            val fiveMinsAgo = System.currentTimeMillis() - (5 * 60 * 1000)
+            val activeChannels = db.messageDao().getActiveChannels(fiveMinsAgo)
+            
+            kotlinx.coroutines.withContext(kotlinx.coroutines.Dispatchers.Main) {
+                for (channel in activeChannels) {
+                    addChannelTab(channel)
+                }
+            }
+        }
     }
 
     override fun onResume() {

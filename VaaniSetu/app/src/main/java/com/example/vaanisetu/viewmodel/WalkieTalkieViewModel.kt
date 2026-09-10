@@ -21,7 +21,8 @@ data class IncomingMessage(
     val langCode: String, 
     val urgencyFlag: Int, 
     val text: String,
-    val timestamp: Long = System.currentTimeMillis()
+    val timestamp: Long = System.currentTimeMillis(),
+    val id: Long = 0
 )
 
 class WalkieTalkieViewModel(
@@ -42,6 +43,10 @@ class WalkieTalkieViewModel(
 
     // For test verification
     val ttsQueue = mutableListOf<IncomingMessage>()
+
+    init {
+        switchChannel("Global")
+    }
 
     fun onPttPressed(langCode: String) {
         _pttState.value = PttState.LISTENING
@@ -76,7 +81,7 @@ class WalkieTalkieViewModel(
         viewModelScope.launch(kotlinx.coroutines.Dispatchers.IO) {
             val history = messageDao?.getMessagesByChannel(newChannel) ?: emptyList()
             val mapped = history.map { 
-                IncomingMessage(it.sender, it.langCode, it.urgencyFlag, it.content, it.timestamp) 
+                IncomingMessage(it.sender, it.langCode, it.urgencyFlag, it.content, it.timestamp, it.id) 
             }
             _channelMessages.value = mapped
         }
@@ -105,40 +110,63 @@ class WalkieTalkieViewModel(
     fun queueIncomingMessage(message: IncomingMessage, isOwnMessage: Boolean = false) {
         ttsQueue.add(message)
         
-        val now = System.currentTimeMillis()
         val currentMessages = _channelMessages.value.toMutableList()
+        val sdf = java.text.SimpleDateFormat("HH:mm", java.util.Locale.getDefault())
+        val msgTimeStr = sdf.format(java.util.Date(message.timestamp))
         
-        if (isOwnMessage) {
-            // Concatenate if within 30 seconds
-            if (currentMessages.isNotEmpty() && (now - lastOwnMessageTime) < 30_000) {
-                val lastMsg = currentMessages.last()
-                if (lastMsg.sender == message.sender) {
-                    val combinedText = lastMsg.text + " " + message.text
-                    currentMessages[currentMessages.lastIndex] = lastMsg.copy(text = combinedText)
-                    _channelMessages.value = currentMessages
-                } else {
-                    _channelMessages.value = currentMessages + message
-                }
-            } else {
-                _channelMessages.value = currentMessages + message
+        var concatenated = false
+        var updatedMsgId = 0L
+        var combinedText = ""
+        
+        if (currentMessages.isNotEmpty()) {
+            val lastMsg = currentMessages.last()
+            val lastTimeStr = sdf.format(java.util.Date(lastMsg.timestamp))
+            
+            if (lastMsg.sender == message.sender && lastTimeStr == msgTimeStr) {
+                // Same sender, same minute -> Concatenate!
+                combinedText = lastMsg.text + " " + message.text
+                val updatedMsg = lastMsg.copy(text = combinedText)
+                currentMessages[currentMessages.lastIndex] = updatedMsg
+                _channelMessages.value = currentMessages
+                concatenated = true
+                updatedMsgId = updatedMsg.id
             }
-            lastOwnMessageTime = now
-        } else {
-            _channelMessages.value = currentMessages + message
         }
         
+        if (!concatenated) {
+            _channelMessages.value = currentMessages + message
+        }
+
         // Persist to Room DB
         viewModelScope.launch(kotlinx.coroutines.Dispatchers.IO) {
-            messageDao?.insertMessage(
-                com.example.vaanisetu.data.local.entity.MessageEntity(
-                    timestamp = now,
-                    sender = message.sender,
-                    channelId = _currentChannel.value,
-                    content = message.text,
-                    urgencyFlag = message.urgencyFlag,
-                    langCode = message.langCode
-                )
-            )
+            if (concatenated && updatedMsgId != 0L) {
+                // Update existing row
+                messageDao?.updateMessageContent(updatedMsgId, combinedText)
+            } else {
+                // Insert new row
+                val newId = messageDao?.insertMessage(
+                    com.example.vaanisetu.data.local.entity.MessageEntity(
+                        timestamp = message.timestamp,
+                        sender = message.sender,
+                        channelId = _currentChannel.value,
+                        content = message.text,
+                        urgencyFlag = message.urgencyFlag,
+                        langCode = message.langCode
+                    )
+                ) ?: 0L
+                
+                // Update the memory object with the actual DB id so future concatenations work
+                if (newId != 0L) {
+                    val msgs = _channelMessages.value.toMutableList()
+                    val last = msgs.last()
+                    if (last.timestamp == message.timestamp) {
+                        msgs[msgs.lastIndex] = last.copy(id = newId)
+                        _channelMessages.value = msgs
+                    }
+                }
+            }
+            // Enforce max 10MB (approx 10000 rows) history limit
+            messageDao?.enforceHistoryLimit()
         }
         
         if (message.urgencyFlag == 1) {
