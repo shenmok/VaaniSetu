@@ -1,13 +1,13 @@
-# VaaniSetu 🎙️📡
+# VaaniSetu
 
-**Zero-Internet Multilingual Mesh Walkie-Talkie**
+**The Offline Voice Bridge for First Responders.**
 
 ## 1. Project Information
 - **Project Title:** VaaniSetu (वाणी सेतु)
-- **PS ID:** PS 26173
-- **PS Title:** iTantra
-- **Category:** Software / Hardware
-- **Theme:** Space Technology / Disaster Management
+- **Problem Statement ID:**26173
+- **PS Title:** iTantra – Indian Multilingual TTS & STT Aided Neural Transceiver Radio Access for low bitrate links
+- **Category:** Software 
+- **Theme:** Smart Automation / Disaster Management
 - **Team Name:** AlomVilom
 
 ## 2. Problem Statement
@@ -84,7 +84,7 @@ Watch the demonstration of VaaniSetu's zero-internet mesh walkie-talkie in actio
 
 See [submission/DEMO.md](submission/DEMO.md) or access the links below:
 - **YouTube Link:** [https://www.youtube.com/watch?v=DC2WXxVYYIw](https://www.youtube.com/watch?v=DC2WXxVYYIw)
-- **Google Drive Link:** [Demo Folder](https://drive.google.com/drive/folders/186f5XVbbCN8Fl6MBjP_5WAwxQdLhD7MH?usp=sharing)
+- **Google Drive Link:** [Demo Video Folder](https://drive.google.com/drive/folders/186f5XVbbCN8Fl6MBjP_5WAwxQdLhD7MH?usp=sharing)
 
 ## 10. Screenshots / Prototype Photos
 Important screenshots and hardware/prototype photos (LoRa integration) can be found in the screenshots directory.
