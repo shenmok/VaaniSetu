@@ -41,7 +41,7 @@ VaaniSetu is an offline-first, peer-to-peer communication application designed f
 - **Cloud/API:** None — fully offline architecture
 
 ## 6. Architecture
-See [docs/Architecture2.md](docs/Architecture2.md) for full implementation details.
+See [submission/ARCHITECTURE.md](submission/ARCHITECTURE.md) for full implementation details.
 
 ```text
 +-------------------------+                               +-------------------------+
@@ -75,6 +75,7 @@ SIH-VaaniSetu/
 ├── submission/              # Final presentation and demo links
 │   ├── PRESENTATION.md
 │   └── DEMO.md
+│   └── ARCHITECTURE.md
 ├── screenshots/             # App screenshots and LoRa prototype photos
 ├── Apk/                     # Standalone APK releases (In Development)
 ├── requirements.txt         # Project software and hardware dependencies
@@ -85,15 +86,13 @@ SIH-VaaniSetu/
 ## 8. Final Presentation
 The final SIH presentation and pitch deck are linked in the submission folder.
 
-See [submission/PRESENTATION.md](submission/PRESENTATION.md) or directly access it via Google Drive:
-[Presentation Folder](https://drive.google.com/drive/folders/1Nc8ddVIPweR6ASYsve_-KXlhzcCHbKub?usp=sharing)
+See [submission/PRESENTATION.md](submission/PRESENTATION.md):
 
 ## 9. Demo Video
 Watch the demonstration of VaaniSetu's zero-internet neural voice mesh in action:
 
 See [submission/DEMO.md](submission/DEMO.md) or access the links below:
-- **YouTube Link:** [https://www.youtube.com/watch?v=DC2WXxVYYIw](https://www.youtube.com/watch?v=DC2WXxVYYIw)
-- **Google Drive Link:** [Demo Video Folder](https://drive.google.com/drive/folders/186f5XVbbCN8Fl6MBjP_5WAwxQdLhD7MH?usp=sharing)
+- **YouTube Link:** [https://youtu.be/7Jp1y2857pI](https://youtu.be/7Jp1y2857pI)
 
 ## 10. Screenshots / Prototype Photos
 Important screenshots and hardware/prototype photos (LoRa integration) can be found in the screenshots directory.
