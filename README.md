@@ -71,7 +71,7 @@ The repository is structured to separate source code, documentation, assets, and
 ```text
 SIH-VaaniSetu/
 ├── VaaniSetu/               # Main Android application source code
-├── docs/                    # Technical architecture, design, and PRD documents
+├── docs/                    # Technical architecture,PRD
 ├── submission/              # Final presentation and demo links
 │   ├── PRESENTATION.md
 │   └── DEMO.md
