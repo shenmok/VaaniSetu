@@ -86,7 +86,7 @@ SIH-VaaniSetu/
 ## 8. Final Presentation
 The final SIH presentation and pitch deck are linked in the submission folder.
 
-See [submission/PRESENTATION.md](submission/PRESENTATION.md):
+See [submission/PRESENTATION.pdf](submission/PRESENTATION.pdf):
 
 ## 9. Demo Video
 Watch the demonstration of VaaniSetu's zero-internet neural voice mesh in action:
