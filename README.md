@@ -41,7 +41,7 @@ VaaniSetu is an offline-first, peer-to-peer communication application designed f
 - **Cloud/API:** None — fully offline architecture
 
 ## 6. Architecture
-See [submission/ARCHITECTURE.md](submission/ARCHITECTURE.md) for full implementation details.
+See [submission/ARCHITECTURE.pdf](submission/ARCHITECTURE.pdf) for full implementation details.
 
 ```text
 +-------------------------+                               +-------------------------+
